@@ -3,12 +3,9 @@ package dbmodel
 import "gorm.io/gorm"
 
 type UserGroup struct {
-	UserID  *uint  `json:"user_id"`
-	User    *User  `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	GroupID *uint  `json:"group_id"`
-	Group   *Group `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	ColorID *uint  `json:"color_id"`
-	Color   *Color `gorm:"null;constraint:OnDelete:SET NULL;"`
+	UserID  uint `json:"user_id"`
+	GroupID uint `json:"group_id"`
+	ColorID uint `gorm:"null" json:"color_id"`
 }
 
 type UserGroupRepository interface {

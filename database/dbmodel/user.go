@@ -4,13 +4,15 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"uniqueIndex;not null" json:"username"`
-	Email    string `gorm:"uniqueIndex;not null" json:"email"`
-	Password string `gorm:"not null" json:"password"`
-	Name     string `json:"name"`
-	Surname  string `json:"surname"`
-	ColorID  *uint  `json:"color_id"`
-	Color    *Color `gorm:"null;constraint:OnDelete:SET NULL;"`
+	Username string  `gorm:"uniqueIndex;not null" json:"username"`
+	Email    string  `gorm:"uniqueIndex;not null" json:"email"`
+	Password string  `gorm:"not null" json:"password"`
+	Name     string  `json:"name"`
+	Surname  string  `json:"surname"`
+	ColorID  *uint   `json:"color_id"`
+	Color    *Color  `gorm:"null;constraint:OnDelete:SET NULL;"`
+	Groups   []Group `gorm:"many2many:user_group;" json:"groups"`
+	Colors   []Color `gorm:"many2many:user_group;" json:"colors"`
 }
 
 type UserRepository interface {
