@@ -23,6 +23,10 @@ type userGroupRepository struct {
 	DB *gorm.DB
 }
 
+func NewUserGroupRepository(db *gorm.DB) UserGroupRepository {
+	return &userGroupRepository{DB: db}
+}
+
 func (userGroupRepository *userGroupRepository) Create(userGroup *UserGroup) (*UserGroup, error) {
 	if err := userGroupRepository.DB.Create(userGroup).Error; err != nil {
 		return nil, err

@@ -23,6 +23,10 @@ type colorRepository struct {
 	DB *gorm.DB
 }
 
+func NewColorRepository(db *gorm.DB) ColorRepository {
+	return &colorRepository{DB: db}
+}
+
 func (colorRepository *colorRepository) Create(color *Color) (*Color, error) {
 	if err := colorRepository.DB.Create(color).Error; err != nil {
 		return nil, err

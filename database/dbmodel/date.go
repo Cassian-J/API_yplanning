@@ -36,6 +36,10 @@ type dateRepository struct {
 	DB *gorm.DB
 }
 
+func NewDateRepository(db *gorm.DB) DateRepository {
+	return &dateRepository{DB: db}
+}
+
 func (dateRepository *dateRepository) Create(date *Date) (*Date, error) {
 	if err := dateRepository.DB.Create(date).Error; err != nil {
 		return nil, err

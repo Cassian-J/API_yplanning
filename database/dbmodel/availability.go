@@ -27,6 +27,10 @@ type availabilityRepository struct {
 	DB *gorm.DB
 }
 
+func NewAvailabilityRepository(db *gorm.DB) AvailabilityRepository {
+	return &availabilityRepository{DB: db}
+}
+
 func (availabilityRepository *availabilityRepository) Create(availability *Availability) (*Availability, error) {
 	if err := availabilityRepository.DB.Create(availability).Error; err != nil {
 		return nil, err

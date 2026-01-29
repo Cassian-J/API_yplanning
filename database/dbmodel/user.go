@@ -29,6 +29,10 @@ type userRepository struct {
 	DB *gorm.DB
 }
 
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return &userRepository{DB: db}
+}
+
 func (userRepository *userRepository) Create(user *User) (*User, error) {
 	if err := userRepository.DB.Create(user).Error; err != nil {
 		return nil, err

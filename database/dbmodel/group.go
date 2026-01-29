@@ -24,6 +24,10 @@ type groupRepository struct {
 	DB *gorm.DB
 }
 
+func NewGroupRepository(db *gorm.DB) GroupRepository {
+	return &groupRepository{DB: db}
+}
+
 func (groupRepository *groupRepository) Create(group *Group) (*Group, error) {
 	if err := groupRepository.DB.Create(group).Error; err != nil {
 		return nil, err
