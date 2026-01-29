@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Group struct {
 	gorm.Model
 	Name      string  `gorm:"not null" json:"name"`
-	CreatorID *uint   `json:"creator_id"`
+	CreatorID uint    `json:"creator_id"`
 	Creator   *User   `gorm:"not null;constraint:OnDelete:CASCADE;"`
 	Users     []User  `gorm:"many2many:user_group;" json:"users"`
 	Colors    []Color `gorm:"many2many:user_group;" json:"colors"`
@@ -16,7 +16,7 @@ type GroupRepository interface {
 	FindAll() ([]Group, error)
 	FindByID(id uint) (*Group, error)
 	FindByCreatorID(creatorID uint) (*Group, error)
-	UpdateByID(id uint, group *Group) error
+	UpdateByID(id uint, group *Group) (*Group, error)
 	DeleteByID(id uint) error
 }
 
@@ -59,11 +59,11 @@ func (groupRepository *groupRepository) FindByCreatorID(creatorID uint) (*Group,
 	return &group, nil
 }
 
-func (groupRepository *groupRepository) UpdateByID(id uint, group *Group) error {
+func (groupRepository *groupRepository) UpdateByID(id uint, group *Group) (*Group, error) {
 	if err := groupRepository.DB.Model(&Group{}).Where("id = ?", id).Updates(group).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return group, nil
 }
 
 func (groupRepository *groupRepository) DeleteByID(id uint) error {

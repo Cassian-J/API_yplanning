@@ -10,14 +10,14 @@ type Date struct {
 	gorm.Model
 	Title        string    `gorm:"not null" json:"title"`
 	Body         string    `gorm:"not null" json:"body"`
-	UserID       *uint     `json:"user_id"`
+	UserID       uint      `json:"user_id"`
 	User         *User     `gorm:"not null;constraint:OnDelete:CASCADE;"`
 	BeginTime    time.Time `json:"begin_time"`
 	EndTime      time.Time `json:"end_time"`
 	Private      bool      `json:"private"`
-	RecurrenceID *uint     `json:"recurrence_id"`
+	RecurrenceID uint      `json:"recurrence_id"`
 	Recurrence   *Date     `gorm:"constraint:OnDelete:SET NULL;"`
-	ColorID      *uint     `json:"color_id"`
+	ColorID      uint      `json:"color_id"`
 	Color        *Color    `gorm:"null;constraint:OnDelete:SET NULL;"`
 }
 

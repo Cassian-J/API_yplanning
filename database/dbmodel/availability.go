@@ -8,7 +8,7 @@ import (
 
 type Availability struct {
 	gorm.Model
-	UserID    *uint     `json:"user_id"`
+	UserID    uint      `json:"user_id"`
 	User      *User     `gorm:"not null;constraint:OnDelete:CASCADE;"`
 	BeginTime time.Time `json:"begin_time"`
 	EndTime   time.Time `json:"end_time"`

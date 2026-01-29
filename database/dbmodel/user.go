@@ -9,7 +9,7 @@ type User struct {
 	Password string  `gorm:"not null" json:"password"`
 	Name     string  `json:"name"`
 	Surname  string  `json:"surname"`
-	ColorID  *uint   `json:"color_id"`
+	ColorID  uint    `json:"color_id"`
 	Color    *Color  `gorm:"null;constraint:OnDelete:SET NULL;"`
 	Groups   []Group `gorm:"many2many:user_group;" json:"groups"`
 	Colors   []Color `gorm:"many2many:user_group;" json:"colors"`
@@ -21,7 +21,7 @@ type UserRepository interface {
 	FindByID(id uint) (*User, error)
 	FindByEmail(email string) (*User, error)
 	FindByUsername(username string) (*User, error)
-	UpdateByID(id uint, user *User) error
+	UpdateByID(id uint, user *User) (*User, error)
 	DeleteByID(id uint) error
 }
 
@@ -72,11 +72,11 @@ func (userRepository *userRepository) FindByUsername(username string) (*User, er
 	return &user, nil
 }
 
-func (userRepository *userRepository) UpdateByID(id uint, user *User) error {
+func (userRepository *userRepository) UpdateByID(id uint, user *User) (*User, error) {
 	if err := userRepository.DB.Model(&User{}).Where("id = ?", id).Updates(user).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return user, nil
 }
 
 func (userRepository *userRepository) DeleteByID(id uint) error {
