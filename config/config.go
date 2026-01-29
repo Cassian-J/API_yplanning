@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type config struct {
+type Config struct {
 	GroupRepository        dbmodel.GroupRepository
 	UserRepository         dbmodel.UserRepository
 	ColorRepository        dbmodel.ColorRepository
@@ -17,8 +17,8 @@ type config struct {
 	UserGroupRepository    dbmodel.UserGroupRepository
 }
 
-func New() (*config, error) {
-	config := &config{}
+func New() (*Config, error) {
+	config := &Config{}
 
 	databaseSession, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
