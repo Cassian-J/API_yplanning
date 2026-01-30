@@ -81,21 +81,24 @@ func (config *DateConfig) GetDatesByUserID(w http.ResponseWriter, r *http.Reques
 		render.JSON(w, r, map[string]string{"error": "user_id must be >= 1"})
 		return
 	}
-	date, err := config.DateRepository.FindByUserID(uint(userID))
+	dates, err := config.DateRepository.FindByUserID(uint(userID))
 	if err != nil {
 		render.JSON(w, r, map[string]string{"error": "Failed to retrieve date"})
 		return
 	}
-	dateResponse := &models.DateResponse{
-		ID:           date.ID,
-		Title:        date.Title,
-		Body:         date.Body,
-		DateBegin:    date.BeginTime,
-		DateEnd:      date.EndTime,
-		UserID:       date.UserID,
-		Private:      date.Private,
-		RecurrenceID: date.RecurrenceID,
-		ColorID:      date.ColorID,
+	dateResponse := make([]models.DateResponse, 0)
+	for _, date := range dates {
+		dateResponse = append(dateResponse, models.DateResponse{
+			ID:           date.ID,
+			Title:        date.Title,
+			Body:         date.Body,
+			DateBegin:    date.BeginTime,
+			DateEnd:      date.EndTime,
+			UserID:       date.UserID,
+			Private:      date.Private,
+			RecurrenceID: date.RecurrenceID,
+			ColorID:      date.ColorID,
+		})
 	}
 	render.JSON(w, r, dateResponse)
 }
@@ -129,19 +132,12 @@ func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.
 }
 
 func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Request) {
-	var rangeRequest models.RangeRequest
-
-	if rangeRequest.DateBegin.IsZero() {
-		render.JSON(w, r, map[string]string{"error": "date_begin must not be null"})
-		return
-	} else if rangeRequest.DateEnd.IsZero() {
-		render.JSON(w, r, map[string]string{"error": "date_end must not be null"})
-		return
-	} else if rangeRequest.UserID < 1 {
-		render.JSON(w, r, map[string]string{"error": "user_id must be >= 1"})
+	var rangeRequest models.AvailabilityRequest
+	if err := render.Bind(r, &rangeRequest); err != nil {
+		render.JSON(w, r, map[string]string{"error": "Invalid request payload"})
 		return
 	}
-	date := &models.RangeRequest{
+	date := &models.AvailabilityRequest{
 		DateBegin: rangeRequest.DateBegin,
 		DateEnd:   rangeRequest.DateEnd,
 		UserID:    rangeRequest.UserID,

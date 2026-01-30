@@ -17,12 +17,6 @@ type DateRequest struct {
 	ColorID      uint      `json:"color_id"`
 }
 
-type RangeRequest struct {
-	DateBegin time.Time `json:"date_begin"`
-	DateEnd   time.Time `json:"date_end"`
-	UserID    uint      `json:"user_id"`
-}
-
 func (u *DateRequest) Bind(r *http.Request) error {
 	if u.Title == "" {
 		return errors.New("title must not be null")

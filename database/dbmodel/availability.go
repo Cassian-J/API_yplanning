@@ -18,7 +18,7 @@ type AvailabilityRepository interface {
 	Create(availability *Availability) (*Availability, error)
 	FindAll() ([]Availability, error)
 	FindByID(id uint) (*Availability, error)
-	FindByUserID(userID uint) (*Availability, error)
+	FindByUserID(userID uint) ([]Availability, error)
 	UpdateByID(id uint, availability *Availability) error
 	DeleteByID(id uint) error
 }
@@ -54,12 +54,12 @@ func (availabilityRepository *availabilityRepository) FindByID(id uint) (*Availa
 	return &availability, nil
 }
 
-func (availabilityRepository *availabilityRepository) FindByUserID(userID uint) (*Availability, error) {
-	var availability Availability
-	if err := availabilityRepository.DB.Preload("User").First(&availability, userID).Error; err != nil {
+func (availabilityRepository *availabilityRepository) FindByUserID(userID uint) ([]Availability, error) {
+	var availabilities []Availability
+	if err := availabilityRepository.DB.Preload("User").Find(&availabilities, userID).Error; err != nil {
 		return nil, err
 	}
-	return &availability, nil
+	return availabilities, nil
 }
 
 func (availabilityRepository *availabilityRepository) UpdateByID(id uint, availability *Availability) error {

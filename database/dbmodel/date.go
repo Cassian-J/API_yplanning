@@ -25,7 +25,7 @@ type DateRepository interface {
 	Create(date *Date) (*Date, error)
 	FindAll() ([]Date, error)
 	FindByID(id uint) (*Date, error)
-	FindByUserID(userID uint) (*Date, error)
+	FindByUserID(userID uint) ([]Date, error)
 	FindByRecurrenceID(recurrenceID uint) (*Date, error)
 	FindByDayRange(begin time.Time, end time.Time, userID uint) ([]Date, error)
 	UpdateByID(id uint, date *Date) error
@@ -63,12 +63,12 @@ func (dateRepository *dateRepository) FindByID(id uint) (*Date, error) {
 	return &date, nil
 }
 
-func (dateRepository *dateRepository) FindByUserID(userID uint) (*Date, error) {
-	var date Date
-	if err := dateRepository.DB.Preload("User").First(&date, userID).Error; err != nil {
+func (dateRepository *dateRepository) FindByUserID(userID uint) ([]Date, error) {
+	var dates []Date
+	if err := dateRepository.DB.Preload("User").Find(&dates, userID).Error; err != nil {
 		return nil, err
 	}
-	return &date, nil
+	return dates, nil
 }
 
 func (dateRepository *dateRepository) FindByRecurrenceID(recurrenceID uint) (*Date, error) {
