@@ -21,6 +21,25 @@ func NewColorConfig(cfg *config.Config) *ColorConfig {
 	return &ColorConfig{Config: cfg}
 }
 
+func (config *ColorConfig) CreateColor(w http.ResponseWriter, r *http.Request) {
+	colorRequest := &models.ColorRequest{}
+	if err := render.Bind(r, colorRequest); err != nil {
+		render.JSON(w, r, map[string]string{"error": err.Error()})
+		return
+	}
+	color := &dbmodel.Color{
+		HexCode: colorRequest.HexCode,
+		Name:    colorRequest.Name,
+	}
+	createdColor, err := config.ColorRepository.Create(color)
+	if err != nil {
+		render.JSON(w, r, map[string]string{"error": "Failed to create color"})
+		return
+	}
+	colorResponse := &models.ColorResponse{ID: createdColor.ID, HexCode: createdColor.HexCode, Name: createdColor.Name}
+	render.JSON(w, r, colorResponse)
+}
+
 func (config *ColorConfig) GetAllColors(w http.ResponseWriter, r *http.Request) {
 	colors, err := config.ColorRepository.FindAll()
 	if err != nil {
@@ -72,25 +91,6 @@ func (config *ColorConfig) GetByHexCode(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	colorResponse := &models.ColorResponse{ID: color.ID, HexCode: color.HexCode, Name: color.Name}
-	render.JSON(w, r, colorResponse)
-}
-
-func (config *ColorConfig) CreateColor(w http.ResponseWriter, r *http.Request) {
-	colorRequest := &models.ColorRequest{}
-	if err := render.Bind(r, colorRequest); err != nil {
-		render.JSON(w, r, map[string]string{"error": err.Error()})
-		return
-	}
-	color := &dbmodel.Color{
-		HexCode: colorRequest.HexCode,
-		Name:    colorRequest.Name,
-	}
-	createdColor, err := config.ColorRepository.Create(color)
-	if err != nil {
-		render.JSON(w, r, map[string]string{"error": "Failed to create color"})
-		return
-	}
-	colorResponse := &models.ColorResponse{ID: createdColor.ID, HexCode: createdColor.HexCode, Name: createdColor.Name}
 	render.JSON(w, r, colorResponse)
 }
 

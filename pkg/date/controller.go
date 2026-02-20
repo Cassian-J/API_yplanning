@@ -21,6 +21,41 @@ func NewDateConfig(cfg *config.Config) *DateConfig {
 	return &DateConfig{Config: cfg}
 }
 
+func (config *DateConfig) CreateDate(w http.ResponseWriter, r *http.Request) {
+	var dateRequest models.DateRequest
+	if err := render.Bind(r, &dateRequest); err != nil {
+		render.JSON(w, r, map[string]string{"error": "Invalid request payload"})
+		return
+	}
+	date := &dbmodel.Date{
+		Title:        dateRequest.Title,
+		Body:         dateRequest.Body,
+		BeginTime:    dateRequest.DateBegin,
+		EndTime:      dateRequest.DateEnd,
+		UserID:       dateRequest.UserID,
+		Private:      dateRequest.Private,
+		RecurrenceID: dateRequest.RecurrenceID,
+		ColorID:      dateRequest.ColorID,
+	}
+	createdDate, err := config.DateRepository.Create(date)
+	if err != nil {
+		render.JSON(w, r, map[string]string{"error": "Failed to create date"})
+		return
+	}
+	dateResponse := &models.DateResponse{
+		ID:           createdDate.ID,
+		Title:        createdDate.Title,
+		Body:         createdDate.Body,
+		DateBegin:    createdDate.BeginTime,
+		DateEnd:      createdDate.EndTime,
+		UserID:       createdDate.UserID,
+		Private:      createdDate.Private,
+		RecurrenceID: createdDate.RecurrenceID,
+		ColorID:      createdDate.ColorID,
+	}
+	render.JSON(w, r, dateResponse)
+}
+
 func (config *DateConfig) GetAllDates(w http.ResponseWriter, r *http.Request) {
 	dates, err := config.DateRepository.FindAll()
 	if err != nil {
@@ -73,7 +108,7 @@ func (config *DateConfig) GetDateByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (config *DateConfig) GetDatesByUserID(w http.ResponseWriter, r *http.Request) {
-	userID, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
 	if err != nil {
 		fmt.Println("Error during user_id convertion")
 	}
@@ -104,7 +139,7 @@ func (config *DateConfig) GetDatesByUserID(w http.ResponseWriter, r *http.Reques
 }
 
 func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.Request) {
-	recurrenceID, err := strconv.Atoi(chi.URLParam(r, "recurrence_id"))
+	recurrenceID, err := strconv.Atoi(chi.URLParam(r, "recurrenceID"))
 	if err != nil {
 		fmt.Println("Error during recurrence_id convertion")
 	}
@@ -163,41 +198,6 @@ func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Reque
 		})
 	}
 	render.JSON(w, r, DateResponse)
-}
-
-func (config *DateConfig) CreateDate(w http.ResponseWriter, r *http.Request) {
-	var dateRequest models.DateRequest
-	if err := render.Bind(r, &dateRequest); err != nil {
-		render.JSON(w, r, map[string]string{"error": "Invalid request payload"})
-		return
-	}
-	date := &dbmodel.Date{
-		Title:        dateRequest.Title,
-		Body:         dateRequest.Body,
-		BeginTime:    dateRequest.DateBegin,
-		EndTime:      dateRequest.DateEnd,
-		UserID:       dateRequest.UserID,
-		Private:      dateRequest.Private,
-		RecurrenceID: dateRequest.RecurrenceID,
-		ColorID:      dateRequest.ColorID,
-	}
-	createdDate, err := config.DateRepository.Create(date)
-	if err != nil {
-		render.JSON(w, r, map[string]string{"error": "Failed to create date"})
-		return
-	}
-	dateResponse := &models.DateResponse{
-		ID:           createdDate.ID,
-		Title:        createdDate.Title,
-		Body:         createdDate.Body,
-		DateBegin:    createdDate.BeginTime,
-		DateEnd:      createdDate.EndTime,
-		UserID:       createdDate.UserID,
-		Private:      createdDate.Private,
-		RecurrenceID: createdDate.RecurrenceID,
-		ColorID:      createdDate.ColorID,
-	}
-	render.JSON(w, r, dateResponse)
 }
 
 func (config *DateConfig) UpdateDate(w http.ResponseWriter, r *http.Request) {

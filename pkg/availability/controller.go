@@ -21,6 +21,31 @@ func NewAvailibilityConfig(afg *config.Config) *AvailabilityConfig {
 	return &AvailabilityConfig{Config: afg}
 }
 
+func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *http.Request) {
+	var availabilityRequest models.AvailabilityRequest
+	if err := render.Bind(r, &availabilityRequest); err != nil {
+		render.JSON(w, r, map[string]string{"error": "Invalid request payload"})
+		return
+	}
+	availability := &dbmodel.Availability{
+		BeginTime: availabilityRequest.DateBegin,
+		EndTime:   availabilityRequest.DateEnd,
+		UserID:    availabilityRequest.UserID,
+	}
+	createdAvailability, err := config.AvailabilityRepository.Create(availability)
+	if err != nil {
+		render.JSON(w, r, map[string]string{"error": "Failed to create availability"})
+		return
+	}
+	availabilityResponse := &models.AvailabilityResponse{
+		ID:        createdAvailability.ID,
+		DateBegin: createdAvailability.BeginTime,
+		DateEnd:   createdAvailability.EndTime,
+		UserID:    createdAvailability.UserID,
+	}
+	render.JSON(w, r, availabilityResponse)
+}
+
 func (config *AvailabilityConfig) GetAllAvailability(w http.ResponseWriter, r *http.Request) {
 	availabilities, err := config.AvailabilityRepository.FindAll()
 	if err != nil {
@@ -63,7 +88,7 @@ func (config *AvailabilityConfig) GetAvailabilityByID(w http.ResponseWriter, r *
 }
 
 func (config *AvailabilityConfig) GetAvailabilitiesByUserID(w http.ResponseWriter, r *http.Request) {
-	userID, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
 	if err != nil {
 		fmt.Println("Error during user_id convertion")
 	}
@@ -84,31 +109,6 @@ func (config *AvailabilityConfig) GetAvailabilitiesByUserID(w http.ResponseWrite
 			DateEnd:   availability.EndTime,
 			UserID:    availability.UserID,
 		})
-	}
-	render.JSON(w, r, availabilityResponse)
-}
-
-func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *http.Request) {
-	var availabilityRequest models.AvailabilityRequest
-	if err := render.Bind(r, &availabilityRequest); err != nil {
-		render.JSON(w, r, map[string]string{"error": "Invalid request payload"})
-		return
-	}
-	availability := &dbmodel.Availability{
-		BeginTime: availabilityRequest.DateBegin,
-		EndTime:   availabilityRequest.DateEnd,
-		UserID:    availabilityRequest.UserID,
-	}
-	createdAvailability, err := config.AvailabilityRepository.Create(availability)
-	if err != nil {
-		render.JSON(w, r, map[string]string{"error": "Failed to create availability"})
-		return
-	}
-	availabilityResponse := &models.AvailabilityResponse{
-		ID:        createdAvailability.ID,
-		DateBegin: createdAvailability.BeginTime,
-		DateEnd:   createdAvailability.EndTime,
-		UserID:    createdAvailability.UserID,
 	}
 	render.JSON(w, r, availabilityResponse)
 }

@@ -21,6 +21,22 @@ func NewGroupConfig(cfg *config.Config) *GroupConfig {
 	return &GroupConfig{Config: cfg}
 }
 
+func (config *GroupConfig) CreateGroup(w http.ResponseWriter, r *http.Request) {
+	req := &models.GroupRequest{}
+	if err := render.Bind(r, req); err != nil {
+		render.JSON(w, r, map[string]string{"error": "Invalid request payload"})
+		return
+	}
+	group := &dbmodel.Group{Name: req.Name, CreatorID: req.CreatorID}
+	created, err := config.GroupRepository.Create(group)
+	if err != nil {
+		render.JSON(w, r, map[string]string{"error": "Failed to create group"})
+		return
+	}
+	groupResponse := &models.GroupResponse{ID: created.ID, Name: created.Name, CreatorID: created.CreatorID}
+	render.JSON(w, r, groupResponse)
+}
+
 func (config *GroupConfig) GetAllGroups(w http.ResponseWriter, r *http.Request) {
 	groups, err := config.GroupRepository.FindAll()
 	if err != nil {
@@ -58,7 +74,7 @@ func (config *GroupConfig) GetGroupByID(w http.ResponseWriter, r *http.Request) 
 	render.JSON(w, r, groupResponse)
 }
 
-func (config *GroupConfig) GetGroupBygroupname(w http.ResponseWriter, r *http.Request) {
+func (config *GroupConfig) GetGroupByCreatorID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		fmt.Println("Error during id convertion")

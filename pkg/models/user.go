@@ -11,6 +11,11 @@ type UserRequest struct {
 	Password string `json:"password"`
 }
 
+type GetUserRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
 func (u *UserRequest) Bind(r *http.Request) error {
 	if u.Email == "" {
 		return errors.New("email must not be null")
@@ -28,5 +33,5 @@ type UserResponse struct {
 	Email    string `json:"email"`
 	Name     string `json:"name"`
 	Surname  string `json:"surname"`
-	ColorID  uint  `json:"color_id"`
+	ColorID  uint   `json:"color_id"`
 }

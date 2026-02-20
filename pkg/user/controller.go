@@ -61,27 +61,40 @@ func (config *UserConfig) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, userResponse)
 }
 
-func (config *UserConfig) GetUserByUsername(w http.ResponseWriter, r *http.Request) {
-	username := chi.URLParam(r, "username")
+func (config *UserConfig) GetUser(w http.ResponseWriter, r *http.Request) {
+	var req models.GetUserRequest
 
-	user, err := config.UserRepository.FindByUsername(username)
+	if err := render.DecodeJSON(r.Body, &req); err != nil {
+		render.JSON(w, r, map[string]string{"error": "Invalid request body"})
+		return
+	}
+
+	var user *dbmodel.User
+	var err error
+
+	if req.Username != "" {
+		user, err = config.UserRepository.FindByUsername(req.Username)
+	} else if req.Email != "" {
+		user, err = config.UserRepository.FindByEmail(req.Email)
+	} else {
+		render.JSON(w, r, map[string]string{"error": "Username or email is required"})
+		return
+	}
+
 	if err != nil {
 		render.JSON(w, r, map[string]string{"error": "Failed to retrieve user"})
 		return
 	}
-	userResponse := &models.UserResponse{ID: user.ID, Email: user.Email, Username: user.Username}
-	render.JSON(w, r, userResponse)
-}
 
-func (config *UserConfig) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
-	email := chi.URLParam(r, "email")
-
-	user, err := config.UserRepository.FindByEmail(email)
-	if err != nil {
-		render.JSON(w, r, map[string]string{"error": "Failed to retrieve user"})
-		return
+	userResponse := &models.UserResponse{
+		ID:       user.ID,
+		Email:    user.Email,
+		Username: user.Username,
+		Name:     user.Name,
+		Surname:  user.Surname,
+		ColorID:  user.ColorID,
 	}
-	userResponse := &models.UserResponse{ID: user.ID, Email: user.Email, Username: user.Username}
+
 	render.JSON(w, r, userResponse)
 }
 
@@ -113,7 +126,7 @@ func (config *UserConfig) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, userResponse)
 }
 
-func (config *UserConfig) DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
+func (config *UserConfig) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		fmt.Println("Error during id convertion")
