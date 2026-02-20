@@ -6,6 +6,16 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+/*
+availability routes:
+POST /availability/
+GET /availability/availabilities
+GET /availability/{id}
+GET /availability/user/{userID}
+PUT /availability/{id}
+DELETE /availability/{id}
+*/
+
 func Routes(config *config.Config) chi.Router {
 	AvailabilityConfig := NewAvailibilityConfig(config)
 	router := chi.NewRouter()

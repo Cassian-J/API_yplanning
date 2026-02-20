@@ -8,11 +8,11 @@ import (
 
 /*
 User routes:
-GET /users - Get all users (for testing purposes only)
-GET /users/{id} - Get a user by ID
-GET /users?email={email} - Get a user by email
-PUT /users/{id} - Update a user by ID
-DELETE /users/{id} - Delete a user by ID
+GET /user/users - Get all users (for testing purposes only)
+GET /user/{id} - Get a user by ID
+GET /user/ - Get a user by email
+PUT /user/{id} - Update a user by ID
+DELETE /user/{id} - Delete a user by ID
 */
 
 func Routes(config *config.Config) chi.Router {

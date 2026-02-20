@@ -32,11 +32,11 @@ func Routes(configuration *config.Config) *chi.Mux {
 
 	router.Group(func(r chi.Router) {
 		r.Use(authentication.AuthMiddleware(os.Getenv("JWT_SECRET")))
-		r.Mount("/api/groups", group.Routes(configuration))
+		r.Mount("/api/group", group.Routes(configuration))
 		r.Mount("/api/date", date.Routes(configuration))
 		r.Mount("/api/availability", availability.Routes(configuration))
 		r.Mount("/api/color", color.Routes(configuration))
-		r.Mount("/api/users", user.Routes(configuration))
+		r.Mount("/api/user", user.Routes(configuration))
 	})
 
 	return router

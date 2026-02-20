@@ -6,6 +6,13 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+/*
+auth routes:
+POST /auth/login
+POST /auth/refresh
+POST /auth/register
+*/
+
 func Routes(configuration *config.Config) chi.Router {
 	UserConfig := New(configuration)
 	router := chi.NewRouter()
