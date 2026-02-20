@@ -1,8 +1,8 @@
-# LocateThis API
+# yplanning API
 
-A location-based API built with Go, featuring JWT authentication and Swagger documentation.
+Development of a dedicated API for managing collaborative schedules, enabling the identification of shared time slots between multiple users. The API integrates a secure authentication system based on JWT and interactive documentation generated with Swagger.
 
-**Contributors:** Jeremy, Cassian, Kelyan, and Godwin
+**Contributors:** Mathis and Cassian
 
 ---
 
@@ -12,6 +12,8 @@ A location-based API built with Go, featuring JWT authentication and Swagger doc
 
 - Latest version of Go (starting by the 1.24 version) installed on your system
 - Bruno or Postman for API testing (we recommend Bruno because you can test the links without connection)
+
+a Swagger exist in the project if you want to test the project without Bruno or Postman
 
 ### Installation
 
