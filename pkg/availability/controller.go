@@ -29,6 +29,7 @@ func NewAvailibilityConfig(afg *config.Config) *AvailabilityConfig {
 // @Param availability body models.AvailabilityRequest true "Availability information"
 // @Success 200 {object} models.AvailabilityResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /availability/ [post]
 func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *http.Request) {
 	var availabilityRequest models.AvailabilityRequest

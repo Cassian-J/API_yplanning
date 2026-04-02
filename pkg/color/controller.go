@@ -6,8 +6,8 @@ import (
 
 	"yplanning/config"
 	"yplanning/database/dbmodel"
-	"yplanning/pkg/models"
 	"yplanning/pkg/errors"
+	"yplanning/pkg/models"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -29,6 +29,7 @@ func NewColorConfig(cfg *config.Config) *ColorConfig {
 // @Param color body models.ColorRequest true "Color information"
 // @Success 200 {object} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /color/ [post]
 func (config *ColorConfig) CreateColor(w http.ResponseWriter, r *http.Request) {
 	colorRequest := &models.ColorRequest{}
@@ -56,6 +57,7 @@ func (config *ColorConfig) CreateColor(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {array} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /color/colors [get]
 func (config *ColorConfig) GetAllColors(w http.ResponseWriter, r *http.Request) {
 	colors, err := config.ColorRepository.FindAll()
@@ -82,6 +84,7 @@ func (config *ColorConfig) GetAllColors(w http.ResponseWriter, r *http.Request) 
 // @Param id path int true "Color ID"
 // @Success 200 {object} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /color/{id} [get]
 func (config *ColorConfig) GetColorByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -110,7 +113,8 @@ func (config *ColorConfig) GetColorByID(w http.ResponseWriter, r *http.Request) 
 // @Param color body models.ColorRequest true "Color information"
 // @Success 200 {object} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
-// @Router /color/hex [post]
+// @Security 	BearerAuth
+// @Router /color/hex [get]
 func (config *ColorConfig) GetByHexCode(w http.ResponseWriter, r *http.Request) {
 	colorRequest := &models.ColorRequest{}
 	if err := render.Bind(r, colorRequest); err != nil {
@@ -139,6 +143,7 @@ func (config *ColorConfig) GetByHexCode(w http.ResponseWriter, r *http.Request) 
 // @Param color body models.ColorRequest true "Updated color information"
 // @Success 200 {object} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /color/{id} [put]
 func (config *ColorConfig) UpdateColor(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -173,6 +178,7 @@ func (config *ColorConfig) UpdateColor(w http.ResponseWriter, r *http.Request) {
 // @Param color body models.ColorRequest true "Updated color information"
 // @Success 200 {object} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /color/{id} [put]
 func (config *ColorConfig) DeleteColor(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))

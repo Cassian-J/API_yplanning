@@ -26,12 +26,12 @@ func New(configuration *config.Config) *AuthConfig {
 // @Tags authentication
 // @Accept json
 // @Produce json
-// @Param user body models.UserRequest true "User registration information"
+// @Param user body models.CreateUserRequest true "User registration information"
 // @Success 200 {object} models.TokenResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Router /auth/register [post]
 func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
-	var req models.UserRequest
+	var req models.CreateUserRequest
 	if err := render.DecodeJSON(r.Body, &req); err != nil {
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request body: "+err.Error())
 		return
@@ -57,7 +57,7 @@ func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create user: "+err.Error())
 		return
 	}
-	user := &models.UserResponse{ID: res.ID, Email: res.Email, Username: res.Username}
+	user := &models.UserResponse{ID: res.ID, Email: res.Email, Username: res.Username, Name: res.Name, Surname: res.Surname}
 
 	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), user.Email)
 	if err != nil {

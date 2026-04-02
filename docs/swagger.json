@@ -108,7 +108,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserRequest"
+                            "$ref": "#/definitions/models.CreateUserRequest"
                         }
                     }
                 ],
@@ -130,6 +130,11 @@
         },
         "/availability/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new availability with the provided begin and end times, and user ID",
                 "consumes": [
                     "application/json"
@@ -368,6 +373,11 @@
         },
         "/color/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new color with the provided hex code and name",
                 "consumes": [
                     "application/json"
@@ -408,6 +418,11 @@
         },
         "/color/colors": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of all colors",
                 "consumes": [
                     "application/json"
@@ -439,7 +454,12 @@
             }
         },
         "/color/hex": {
-            "post": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a color by its hex code",
                 "consumes": [
                     "application/json"
@@ -480,6 +500,11 @@
         },
         "/color/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a color by its ID",
                 "consumes": [
                     "application/json"
@@ -516,6 +541,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a color's hex code and name by its ID",
                 "consumes": [
                     "application/json"
@@ -563,6 +593,11 @@
         },
         "/date/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new date with the provided details",
                 "consumes": [
                     "application/json"
@@ -603,6 +638,11 @@
         },
         "/date/dates": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of all dates",
                 "consumes": [
                     "application/json"
@@ -635,6 +675,11 @@
         },
         "/date/range": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of dates that fall within a specified day range",
                 "consumes": [
                     "application/json"
@@ -689,6 +734,11 @@
         },
         "/date/recurrence/{recurrenceID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of dates associated with a specific recurrence ID",
                 "consumes": [
                     "application/json"
@@ -730,6 +780,11 @@
         },
         "/date/user/{userID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of dates associated with a specific user ID",
                 "consumes": [
                     "application/json"
@@ -771,6 +826,11 @@
         },
         "/date/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a date by its ID",
                 "consumes": [
                     "application/json"
@@ -807,6 +867,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update the details of a date identified by its ID",
                 "consumes": [
                     "application/json"
@@ -855,6 +920,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a date identified by its ID",
                 "consumes": [
                     "application/json"
@@ -1183,6 +1253,17 @@
                     "users"
                 ],
                 "summary": "Get user by email or username",
+                "parameters": [
+                    {
+                        "description": "User search criteria",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.GetUserRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1428,6 +1509,26 @@
                 }
             }
         },
+        "models.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.DateRequest": {
             "type": "object",
             "properties": {
@@ -1493,6 +1594,17 @@
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

@@ -115,7 +115,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserRequest"
+                            "$ref": "#/definitions/models.CreateUserRequest"
                         }
                     }
                 ],
@@ -137,6 +137,11 @@ const docTemplate = `{
         },
         "/availability/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new availability with the provided begin and end times, and user ID",
                 "consumes": [
                     "application/json"
@@ -375,6 +380,11 @@ const docTemplate = `{
         },
         "/color/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new color with the provided hex code and name",
                 "consumes": [
                     "application/json"
@@ -415,6 +425,11 @@ const docTemplate = `{
         },
         "/color/colors": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of all colors",
                 "consumes": [
                     "application/json"
@@ -446,7 +461,12 @@ const docTemplate = `{
             }
         },
         "/color/hex": {
-            "post": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a color by its hex code",
                 "consumes": [
                     "application/json"
@@ -487,6 +507,11 @@ const docTemplate = `{
         },
         "/color/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a color by its ID",
                 "consumes": [
                     "application/json"
@@ -523,6 +548,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a color's hex code and name by its ID",
                 "consumes": [
                     "application/json"
@@ -570,6 +600,11 @@ const docTemplate = `{
         },
         "/date/": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new date with the provided details",
                 "consumes": [
                     "application/json"
@@ -610,6 +645,11 @@ const docTemplate = `{
         },
         "/date/dates": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of all dates",
                 "consumes": [
                     "application/json"
@@ -642,6 +682,11 @@ const docTemplate = `{
         },
         "/date/range": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of dates that fall within a specified day range",
                 "consumes": [
                     "application/json"
@@ -696,6 +741,11 @@ const docTemplate = `{
         },
         "/date/recurrence/{recurrenceID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of dates associated with a specific recurrence ID",
                 "consumes": [
                     "application/json"
@@ -737,6 +787,11 @@ const docTemplate = `{
         },
         "/date/user/{userID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of dates associated with a specific user ID",
                 "consumes": [
                     "application/json"
@@ -778,6 +833,11 @@ const docTemplate = `{
         },
         "/date/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a date by its ID",
                 "consumes": [
                     "application/json"
@@ -814,6 +874,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update the details of a date identified by its ID",
                 "consumes": [
                     "application/json"
@@ -862,6 +927,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a date identified by its ID",
                 "consumes": [
                     "application/json"
@@ -1190,6 +1260,17 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get user by email or username",
+                "parameters": [
+                    {
+                        "description": "User search criteria",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.GetUserRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1435,6 +1516,26 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.DateRequest": {
             "type": "object",
             "properties": {
@@ -1500,6 +1601,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

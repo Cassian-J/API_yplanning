@@ -29,6 +29,7 @@ func NewDateConfig(cfg *config.Config) *DateConfig {
 // @Param date body models.DateRequest true "Date details"
 // @Success 200 {object} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/ [post]
 func (config *DateConfig) CreateDate(w http.ResponseWriter, r *http.Request) {
 	var dateRequest models.DateRequest
@@ -72,6 +73,7 @@ func (config *DateConfig) CreateDate(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {array} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/dates [get]
 func (config *DateConfig) GetAllDates(w http.ResponseWriter, r *http.Request) {
 	dates, err := config.DateRepository.FindAll()
@@ -104,6 +106,7 @@ func (config *DateConfig) GetAllDates(w http.ResponseWriter, r *http.Request) {
 // @Param id path int true "Date ID"
 // @Success 200 {object} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/{id} [get]
 func (config *DateConfig) GetDateByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -142,6 +145,7 @@ func (config *DateConfig) GetDateByID(w http.ResponseWriter, r *http.Request) {
 // @Param userID path int true "User ID"
 // @Success 200 {array} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/user/{userID} [get]
 func (config *DateConfig) GetDatesByUserID(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
@@ -183,6 +187,7 @@ func (config *DateConfig) GetDatesByUserID(w http.ResponseWriter, r *http.Reques
 // @Param recurrenceID path int true "Recurrence ID"
 // @Success 200 {array} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/recurrence/{recurrenceID} [get]
 func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.Request) {
 	recurrenceID, err := strconv.Atoi(chi.URLParam(r, "recurrenceID"))
@@ -223,6 +228,7 @@ func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.
 // @Param userID query int false "User ID to filter dates (optional)"
 // @Success 200 {array} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/range [get]
 func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Request) {
 	var rangeRequest models.AvailabilityRequest
@@ -267,6 +273,7 @@ func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Reque
 // @Param date body models.DateRequest true "Updated date details"
 // @Success 200 {object} map[string]string "Success message"
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/{id} [put]
 func (config *DateConfig) UpdateDate(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
@@ -309,6 +316,7 @@ func (config *DateConfig) UpdateDate(w http.ResponseWriter, r *http.Request) {
 // @Param id path int true "Date ID"
 // @Success 200 {object} map[string]string "Success message"
 // @Failure 400 {object} models.ErrorResponse
+// @Security 	BearerAuth
 // @Router /date/{id} [delete]
 func (config *DateConfig) DeleteDate(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))

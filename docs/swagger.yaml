@@ -36,6 +36,19 @@ definitions:
       name:
         type: string
     type: object
+  models.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    type: object
   models.DateRequest:
     properties:
       body:
@@ -79,6 +92,13 @@ definitions:
   models.ErrorResponse:
     properties:
       error:
+        type: string
+    type: object
+  models.GetUserRequest:
+    properties:
+      email:
+        type: string
+      username:
         type: string
     type: object
   models.GroupRequest:
@@ -207,7 +227,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.UserRequest'
+          $ref: '#/definitions/models.CreateUserRequest'
       produces:
       - application/json
       responses:
@@ -246,6 +266,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new availability
       tags:
       - availabilities
@@ -405,6 +427,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new color
       tags:
       - colors
@@ -430,6 +454,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get color by ID
       tags:
       - colors
@@ -460,6 +486,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update a color by ID
       tags:
       - colors
@@ -481,11 +509,13 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get all colors
       tags:
       - colors
   /color/hex:
-    post:
+    get:
       consumes:
       - application/json
       description: Retrieve a color by its hex code
@@ -507,6 +537,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get color by hex code
       tags:
       - colors
@@ -533,6 +565,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new date
       tags:
       - dates
@@ -560,6 +594,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a date by ID
       tags:
       - dates
@@ -584,6 +620,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get date by ID
       tags:
       - dates
@@ -616,6 +654,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update a date by ID
       tags:
       - dates
@@ -637,6 +677,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get all dates
       tags:
       - dates
@@ -673,6 +715,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get dates by day range
       tags:
       - dates
@@ -701,6 +745,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get dates by recurrence ID
       tags:
       - dates
@@ -728,6 +774,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get dates by user ID
       tags:
       - dates
@@ -907,6 +955,13 @@ paths:
       consumes:
       - application/json
       description: Retrieve a user by its username or email
+      parameters:
+      - description: User search criteria
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.GetUserRequest'
       produces:
       - application/json
       responses:

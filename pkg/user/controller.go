@@ -86,6 +86,7 @@ func (config *UserConfig) GetUserByID(w http.ResponseWriter, r *http.Request) {
 // @Tags		users
 // @Accept		json
 // @Produce		json
+// @Param		request	body	models.GetUserRequest	true	"User search criteria"
 // @Success		200	{object}	models.UserResponse
 // @Failure 	400 {object} models.ErrorResponse
 // @Security 	BearerAuth

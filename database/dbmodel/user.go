@@ -4,9 +4,9 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"uniqueIndex;not null" json:"username"`
+	Username string `gorm:"uniqueIndex" json:"username"`
 	Email    string `gorm:"uniqueIndex;not null" json:"email"`
-	Password string `gorm:"not null" json:"password"`	
+	Password string `gorm:"not null" json:"password"`
 	Name     string `json:"name"`
 	Surname  string `json:"surname"`
 	ColorID  uint   `json:"color_id"`

@@ -11,6 +11,14 @@ type UserRequest struct {
 	Password string `json:"password"`
 }
 
+type CreateUserRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+	Surname  string `json:"surname"`
+}
+
 type GetUserRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
