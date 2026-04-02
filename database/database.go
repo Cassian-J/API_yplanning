@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func InitDatabase(db *gorm.DB) {
 	var err error
-	DB, err = gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	DB, err = gorm.Open(sqlite.Open("test.db"), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: false})
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
@@ -33,7 +33,6 @@ func Migrate(db *gorm.DB) {
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
-	err = db.SetupJoinTable(&dbmodel.User{}, "Groups", &dbmodel.UserGroup{})
 	if err != nil {
 		log.Fatal("Failed to setup join table:", err)
 	}

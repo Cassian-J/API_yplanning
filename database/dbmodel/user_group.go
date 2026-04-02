@@ -6,6 +6,10 @@ type UserGroup struct {
 	UserID  uint `json:"user_id"`
 	GroupID uint `json:"group_id"`
 	ColorID uint `gorm:"null" json:"color_id"`
+
+	User  User  `gorm:"constraint:OnDelete:CASCADE;"`
+	Group Group `gorm:"constraint:OnDelete:CASCADE;"`
+	Color Color `gorm:"constraint:OnDelete:SET NULL;"`
 }
 
 type UserGroupRepository interface {

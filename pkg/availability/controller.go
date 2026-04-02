@@ -6,6 +6,7 @@ import (
 
 	"yplanning/config"
 	"yplanning/database/dbmodel"
+	"yplanning/pkg/errors"
 	"yplanning/pkg/models"
 
 	"github.com/go-chi/chi/v5"
@@ -27,13 +28,12 @@ func NewAvailibilityConfig(afg *config.Config) *AvailabilityConfig {
 // @Produce json
 // @Param availability body models.AvailabilityRequest true "Availability information"
 // @Success 200 {object} models.AvailabilityResponse
-// @Failure 400 {object} http.Error
-// @Failure 500 {object} http.Error
+// @Failure 400 {object} models.ErrorResponse
 // @Router /availability/ [post]
 func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *http.Request) {
 	var availabilityRequest models.AvailabilityRequest
 	if err := render.Bind(r, &availabilityRequest); err != nil {
-		http.Error(w, "Invalid request payload: "+err.Error(), http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload: "+err.Error())
 		return
 	}
 	availability := &dbmodel.Availability{
@@ -43,7 +43,7 @@ func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *h
 	}
 	createdAvailability, err := config.AvailabilityRepository.Create(availability)
 	if err != nil {
-		http.Error(w, "Failed to create availability: "+err.Error(), http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create availability: "+err.Error())
 		return
 	}
 	availabilityResponse := &models.AvailabilityResponse{
@@ -61,12 +61,12 @@ func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *h
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.AvailabilityResponse
-// @Failure 500 {object} http.Error
+// @Failure 400 {object} models.ErrorResponse
 // @Router /availability/availabilities [get]
 func (config *AvailabilityConfig) GetAllAvailability(w http.ResponseWriter, r *http.Request) {
 	availabilities, err := config.AvailabilityRepository.FindAll()
 	if err != nil {
-		http.Error(w, "Failed to retrieve availabilities: "+err.Error(), http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve availabilities: "+err.Error())
 		return
 	}
 	availabilityResponse := make([]models.AvailabilityResponse, 0)
@@ -88,22 +88,21 @@ func (config *AvailabilityConfig) GetAllAvailability(w http.ResponseWriter, r *h
 // @Produce json
 // @Param id path int true "Availability ID"
 // @Success 200 {object} models.AvailabilityResponse
-// @Failure 400 {object} http.Error
-// @Failure 500 {object} http.Error
+// @Failure 400 {object} models.ErrorResponse
 // @Router /availability/{id} [get]
 func (config *AvailabilityConfig) GetAvailabilityByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Error during id convertion: "+err.Error(), http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Error during id convertion: "+err.Error())
 		return
 	}
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 	availability, err := config.AvailabilityRepository.FindByID(uint(id))
 	if err != nil {
-		http.Error(w, "Failed to retrieve availability: "+err.Error(), http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve availability: "+err.Error())
 		return
 	}
 	availabilityResponse := &models.AvailabilityResponse{
@@ -122,22 +121,21 @@ func (config *AvailabilityConfig) GetAvailabilityByID(w http.ResponseWriter, r *
 // @Produce json
 // @Param userID path int true "User ID"
 // @Success 200 {array} models.AvailabilityResponse
-// @Failure 400 {object} http.Error
-// @Failure 500 {object} http.Error
+// @Failure 400 {object} models.ErrorResponse
 // @Router /availability/user/{userID} [get]
 func (config *AvailabilityConfig) GetAvailabilitiesByUserID(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
 	if err != nil {
-		http.Error(w, "Error during user_id convertion: "+err.Error(), http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Error during user_id convertion: "+err.Error())
 		return
 	}
 	if userID < 1 {
-		http.Error(w, "user_id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "user_id must be >= 1")
 		return
 	}
 	availabilities, err := config.AvailabilityRepository.FindByUserID(uint(userID))
 	if err != nil {
-		http.Error(w, "Failed to retrieve availabilities: "+err.Error(), http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve availabilities: "+err.Error())
 		return
 	}
 	availabilityResponse := make([]models.AvailabilityResponse, 0)
@@ -160,22 +158,21 @@ func (config *AvailabilityConfig) GetAvailabilitiesByUserID(w http.ResponseWrite
 // @Param id path int true "Availability ID"
 // @Param availability body models.AvailabilityRequest true "Availability information"
 // @Success 200 {object} map[string]string
-// @Failure 400 {object} http.Error
-// @Failure 500 {object} http.Error
+// @Failure 400 {object} models.ErrorResponse
 // @Router /availability/{id} [put]
 func (config *AvailabilityConfig) UpdateAvailability(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Error during id convertion: "+err.Error(), http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Error during id convertion: "+err.Error())
 		return
 	}
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 	var dateRequest models.AvailabilityRequest
 	if err := render.Bind(r, &dateRequest); err != nil {
-		http.Error(w, "Invalid request payload: "+err.Error(), http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload: "+err.Error())
 		return
 	}
 	availability := &dbmodel.Availability{
@@ -185,7 +182,7 @@ func (config *AvailabilityConfig) UpdateAvailability(w http.ResponseWriter, r *h
 	}
 	err = config.AvailabilityRepository.UpdateByID(uint(id), availability)
 	if err != nil {
-		http.Error(w, "Failed to update availability: "+err.Error(), http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update availability: "+err.Error())
 		return
 	}
 	render.JSON(w, r, map[string]string{"message": "Availability updated successfully"})
@@ -198,21 +195,20 @@ func (config *AvailabilityConfig) UpdateAvailability(w http.ResponseWriter, r *h
 // @Produce json
 // @Param id path int true "Availability ID"
 // @Success 200 {object} map[string]string
-// @Failure 400 {object} http.Error
-// @Failure 500 {object} http.Error
+// @Failure 400 {object} models.ErrorResponse
 // @Router /availability/{id} [delete]
 func (config *AvailabilityConfig) DeleteAvailability(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Error during id convertion: "+err.Error(), http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Error during id convertion: "+err.Error())
 	}
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 	err = config.AvailabilityRepository.DeleteByID(uint(id))
 	if err != nil {
-		http.Error(w, "Failed to delete availability: "+err.Error(), http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to delete availability: "+err.Error())
 		return
 	}
 	render.JSON(w, r, map[string]string{"message": "Availability deleted successfully"})

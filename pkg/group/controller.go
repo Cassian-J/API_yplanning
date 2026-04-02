@@ -6,6 +6,7 @@ import (
 
 	"yplanning/config"
 	"yplanning/database/dbmodel"
+	"yplanning/pkg/errors"
 	"yplanning/pkg/models"
 
 	"github.com/go-chi/chi/v5"
@@ -27,19 +28,19 @@ func NewGroupConfig(cfg *config.Config) *GroupConfig {
 // @Produce		json
 // @Param		request	body	models.GroupRequest	true	"Group creation data"
 // @Success		200	{object}	models.GroupResponse
-// @Failure 	400 {object} 	http.Error
+// @Failure 	400 {object} models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/ [post]
 func (config *GroupConfig) CreateGroup(w http.ResponseWriter, r *http.Request) {
 	req := &models.GroupRequest{}
 	if err := render.Bind(r, req); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 	group := &dbmodel.Group{Name: req.Name, CreatorID: req.CreatorID}
 	created, err := config.GroupRepository.Create(group)
 	if err != nil {
-		http.Error(w, "Failed to create group", http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create group")
 		return
 	}
 	groupResponse := &models.GroupResponse{ID: created.ID, Name: created.Name, CreatorID: created.CreatorID}
@@ -51,13 +52,13 @@ func (config *GroupConfig) CreateGroup(w http.ResponseWriter, r *http.Request) {
 // @Tags		groups
 // @Produce		json
 // @Success		200	{array}	models.GroupResponse
-// @Failure 	500 {object} 	http.Error
+// @Failure 	400 {object} models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/groups [get]
 func (config *GroupConfig) GetAllGroups(w http.ResponseWriter, r *http.Request) {
 	groups, err := config.GroupRepository.FindAll()
 	if err != nil {
-		http.Error(w, "Failed to retrieve groups", http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve groups")
 		return
 	}
 
@@ -78,24 +79,24 @@ func (config *GroupConfig) GetAllGroups(w http.ResponseWriter, r *http.Request) 
 // @Produce		json
 // @Param		id	path	int	true	"Group ID"
 // @Success		200	{object}	models.GroupResponse
-// @Failure 	400 {object} 	http.Error
-// @Failure 	500 {object} 	http.Error
+// @Failure 	400 {object} models.ErrorResponse
+// @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/{id} [get]
 func (config *GroupConfig) GetGroupByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Invalid group ID", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid group ID")
 		return
 	}
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 
 	group, err := config.GroupRepository.FindByID(uint(id))
 	if err != nil {
-		http.Error(w, "Failed to retrieve group", http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve group")
 		return
 	}
 	groupResponse := &models.GroupResponse{ID: group.ID, Name: group.Name, CreatorID: group.CreatorID}
@@ -108,24 +109,24 @@ func (config *GroupConfig) GetGroupByID(w http.ResponseWriter, r *http.Request) 
 // @Produce		json
 // @Param		id	path	int	true	"Creator ID"
 // @Success		200	{object}	models.GroupResponse
-// @Failure 	400 {object} 	http.Error
-// @Failure 	500 {object} 	http.Error
+// @Failure 	400 {object} models.ErrorResponse
+// @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/creator/{id} [get]
 func (config *GroupConfig) GetGroupByCreatorID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Invalid group ID", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid group ID")
 		return
 	}
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 
 	group, err := config.GroupRepository.FindByCreatorID(uint(id))
 	if err != nil {
-		http.Error(w, "Failed to retrieve group", http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve group")
 		return
 	}
 	groupResponse := &models.GroupResponse{ID: group.ID, Name: group.Name, CreatorID: group.CreatorID}
@@ -140,32 +141,32 @@ func (config *GroupConfig) GetGroupByCreatorID(w http.ResponseWriter, r *http.Re
 // @Param		id	path	int	true	"Group ID"
 // @Param		request	body	models.GroupRequest	true	"Group update data"
 // @Success		200	{object}	models.GroupResponse
-// @Failure 	400 {object} 	http.Error
-// @Failure 	500 {object} 	http.Error
+// @Failure 	400 {object} models.ErrorResponse
+// @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/{id} [put]
 func (config *GroupConfig) Updategroup(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Invalid group ID", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid group ID")
 		return
 	}
 
 	req := &models.GroupRequest{}
 	if err := render.Bind(r, req); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 
 	group := &dbmodel.Group{Name: req.Name, CreatorID: req.CreatorID}
 	updated, err := config.GroupRepository.UpdateByID(uint(id), group)
 	if err != nil {
-		http.Error(w, "Failed to update group", http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update group")
 		return
 	}
 
@@ -179,24 +180,24 @@ func (config *GroupConfig) Updategroup(w http.ResponseWriter, r *http.Request) {
 // @Produce		json
 // @Param		id	path	int	true	"Group ID"
 // @Success		200	{string}	string	"Successfully deleted entry"
-// @Failure 	400 {object} 	http.Error
-// @Failure 	500 {object} 	http.Error
+// @Failure 	400 {object} models.ErrorResponse
+// @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/{id} [delete]
 func (config *GroupConfig) DeleteGroupHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		http.Error(w, "Invalid group ID", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid group ID")
 		return
 	}
 	if id < 1 {
-		http.Error(w, "id must be >= 1", http.StatusBadRequest)
+		errors.RenderError(w, r, http.StatusBadRequest, "id must be >= 1")
 		return
 	}
 	err = config.GroupRepository.DeleteByID(uint(id))
 	if err != nil {
-		http.Error(w, "Failed to delete group", http.StatusInternalServerError)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to delete group")
 		return
 	}
-	render.JSON(w, r, "Succefully deleted entry")
+	render.JSON(w, r, "Successfully deleted entry")
 }

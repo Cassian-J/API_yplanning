@@ -4,11 +4,11 @@ import "gorm.io/gorm"
 
 type Group struct {
 	gorm.Model
-	Name      string  `gorm:"not null" json:"name"`
-	CreatorID uint    `json:"creator_id"`
-	Creator   *User   `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	Users     []User  `gorm:"many2many:user_group;" json:"users"`
-	Colors    []Color `gorm:"many2many:user_group;" json:"colors"`
+	Name      string `gorm:"not null" json:"name"`
+	CreatorID uint   `json:"creator_id"`
+	Creator   *User  `gorm:"not null;constraint:OnDelete:CASCADE;"`
+
+	UserGroups []UserGroup `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;" json:"user_groups"`
 }
 
 type GroupRepository interface {

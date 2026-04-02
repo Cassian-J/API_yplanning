@@ -12,6 +12,8 @@ import (
 	"yplanning/pkg/group"
 	"yplanning/pkg/user"
 
+	_ "yplanning/docs"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -26,7 +28,9 @@ import (
 // @name			Authorization
 func Routes(configuration *config.Config) *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/swagger/*", httpSwagger.WrapHandler)
+	router.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:"+os.Getenv("PORT")+"/swagger/doc.json"),
+	))
 
 	router.Mount("/api/auth", authentication.Routes(configuration))
 

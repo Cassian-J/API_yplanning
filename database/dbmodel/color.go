@@ -4,10 +4,10 @@ import "gorm.io/gorm"
 
 type Color struct {
 	gorm.Model
-	HexCode string  `gorm:"uniqueIndex;not null;size:7" json:"hex_code"`
-	Name    string  `gorm:"not null" json:"name"`
-	Users   []User  `gorm:"many2many:user_group;" json:"users"`
-	Groups  []Group `gorm:"many2many:user_group;" json:"groups"`
+	HexCode string `gorm:"uniqueIndex;not null;size:7" json:"hex_code"`
+	Name    string `gorm:"not null" json:"name"`
+
+	UserGroups []UserGroup `gorm:"foreignKey:ColorID;constraint:OnDelete:SET NULL;" json:"user_groups"`
 }
 
 type ColorRepository interface {
