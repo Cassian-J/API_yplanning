@@ -86,29 +86,27 @@ func (config *UserConfig) GetUserByID(w http.ResponseWriter, r *http.Request) {
 // @Tags		users
 // @Accept		json
 // @Produce		json
-// @Param		request	body	models.GetUserRequest	true	"User search criteria"
+// @Param username query string false "Username of the user"
+// @Param email    query string false "Email of the user"
 // @Success		200	{object}	models.UserResponse
-// @Failure 	400 {object} models.ErrorResponse
+// @Failure 	400 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/user/ [get]
 func (config *UserConfig) GetUser(w http.ResponseWriter, r *http.Request) {
-	var req models.GetUserRequest
+	username := r.URL.Query().Get("username")
+	email := r.URL.Query().Get("email")
 
-	if err := render.DecodeJSON(r.Body, &req); err != nil {
-		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request body")
+	if username == "" && email == "" {
+		errors.RenderError(w, r, http.StatusBadRequest, "Either username or email must be provided")
 		return
 	}
 
 	var user *dbmodel.User
 	var err error
-
-	if req.Username != "" {
-		user, err = config.UserRepository.FindByUsername(req.Username)
-	} else if req.Email != "" {
-		user, err = config.UserRepository.FindByEmail(req.Email)
+	if username != "" {
+		user, err = config.UserRepository.FindByUsername(username)
 	} else {
-		errors.RenderError(w, r, http.StatusBadRequest, "Either username or email must be provided")
-		return
+		user, err = config.UserRepository.FindByEmail(email)
 	}
 
 	if err != nil {

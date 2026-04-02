@@ -1262,13 +1262,16 @@ const docTemplate = `{
                 "summary": "Get user by email or username",
                 "parameters": [
                     {
-                        "description": "User search criteria",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.GetUserRequest"
-                        }
+                        "type": "string",
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Email of the user",
+                        "name": "email",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1601,17 +1604,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.GetUserRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

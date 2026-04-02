@@ -94,13 +94,6 @@ definitions:
       error:
         type: string
     type: object
-  models.GetUserRequest:
-    properties:
-      email:
-        type: string
-      username:
-        type: string
-    type: object
   models.GroupRequest:
     properties:
       creator_id:
@@ -956,12 +949,14 @@ paths:
       - application/json
       description: Retrieve a user by its username or email
       parameters:
-      - description: User search criteria
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.GetUserRequest'
+      - description: Username of the user
+        in: query
+        name: username
+        type: string
+      - description: Email of the user
+        in: query
+        name: email
+        type: string
       produces:
       - application/json
       responses:
