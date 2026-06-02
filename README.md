@@ -1,8 +1,8 @@
-# yplanning API
+# API Yplanning
 
 Development of a dedicated API for managing collaborative schedules, enabling the identification of shared time slots between multiple users. The API integrates a secure authentication system based on JWT and interactive documentation generated with Swagger.
 
-**Contributors:** Mathis and Cassian
+**Contributors:** Mathis SILOTIA and Cassian JOLY
 
 ---
 
@@ -97,13 +97,81 @@ The API includes:
 
 For detailed endpoint documentation, visit the Swagger UI once the server is running.
 
+```text
+API_yplanning/
+│
+├── config/                         # Application configuration
+│
+├── database/                       # Database layer
+│   ├── dbmodel/                    # Database entities (GORM models)
+│   │   ├── availability.go         # Availability entity
+│   │   ├── color.go                # Color entity
+│   │   ├── date.go                 # Date entity
+│   │   ├── group.go                # Group entity
+│   │   ├── user.go                 # User entity
+│   │   └── user_group.go           # User ↔ Group relationship entity
+│   │
+│   └── database.go                 # Database initialization and connection
+│
+├── docs/                           # Swagger / OpenAPI documentation / auto generated files
+│   ├── docs.go
+│   ├── swagger.json
+│   └── swagger.yaml
+│
+├── pkg/                            # Business modules
+│
+│   ├── Errors/                     # Centralized error handling
+│   │   └── Errors.go
+│   │
+│   ├── authentication/             # Authentication and authorization
+│   │   ├── controller.go           # Login and registration logic
+│   │   ├── jwt.go                  # JWT token management
+│   │   ├── middleware.go           # Authentication middleware
+│   │   └── routes.go               # Authentication routes
+│   │
+│   ├── availability/               # Availability management
+│   │   ├── controller.go
+│   │   └── routes.go
+│   │
+│   ├── color/                      # Color management
+│   │   ├── controller.go
+│   │   └── routes.go
+│   │
+│   ├── date/                       # Date management
+│   │   ├── controller.go
+│   │   └── routes.go
+│   │
+│   ├── group/                      # Group management
+│   │   ├── controller.go
+│   │   └── routes.go
+│   │
+│   ├── user/                       # User management
+│   │   ├── controller.go
+│   │   └── routes.go
+│   │
+│   └── models/                     # DTOs and API request/response models
+│       ├── Error.go
+│       ├── authentication.go
+│       ├── availability.go
+│       ├── color.go
+│       ├── date.go
+│       ├── group.go
+│       └── user.go
+│
+├── .env                            # Environment variables
+├── go.mod                          
+├── go.sum                          
+├── main.go                         
+└── README.md                       
+```
+
 ---
 
 ## Support
 
 If you encounter any issues, please check that:
 - Go is properly installed and up to date
-- Your `.env` file is correctly configured
-- The port 8080 is available on your system
+- Your `.env` file is correctly configured and placed
+- The port you use is available on your system
 
 ---
