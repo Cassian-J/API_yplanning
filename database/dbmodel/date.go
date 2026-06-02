@@ -1,24 +1,22 @@
 package dbmodel
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
 type Date struct {
 	gorm.Model
-	Title        string    `gorm:"not null" json:"title"`
-	Body         string    `gorm:"not null" json:"body"`
-	UserID       uint      `json:"user_id"`
-	User         *User     `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	BeginTime    time.Time `json:"begin_time"`
-	EndTime      time.Time `json:"end_time"`
-	Private      bool      `json:"private"`
-	RecurrenceID uint      `json:"recurrence_id"`
-	Recurrence   *Date     `gorm:"constraint:OnDelete:SET NULL;"`
-	ColorID      uint      `json:"color_id"`
-	Color        *Color    `gorm:"null;constraint:OnDelete:SET NULL;"`
+	Title        string `gorm:"not null" json:"title"`
+	Body         string `gorm:"not null" json:"body"`
+	UserID       uint   `json:"user_id"`
+	User         *User  `gorm:"not null;constraint:OnDelete:CASCADE;"`
+	BeginTime    int    `json:"begin_time"`
+	EndTime      int    `json:"end_time"`
+	Private      bool   `json:"private"`
+	RecurrenceID uint   `json:"recurrence_id"`
+	Recurrence   *Date  `gorm:"constraint:OnDelete:SET NULL;"`
+	ColorID      uint   `json:"color_id"`
+	Color        *Color `gorm:"null;constraint:OnDelete:SET NULL;"`
 }
 
 type DateRepository interface {
@@ -27,7 +25,7 @@ type DateRepository interface {
 	FindByID(id uint) (*Date, error)
 	FindByUserID(userID uint) ([]Date, error)
 	FindByRecurrenceID(recurrenceID uint) (*Date, error)
-	FindByDayRange(begin time.Time, end time.Time, userID uint) ([]Date, error)
+	FindByDayRange(begin int, end int, userID uint) ([]Date, error)
 	UpdateByID(id uint, date *Date) error
 	DeleteByID(id uint) error
 }
@@ -79,7 +77,7 @@ func (dateRepository *dateRepository) FindByRecurrenceID(recurrenceID uint) (*Da
 	return &date, nil
 }
 
-func (dateRepository *dateRepository) FindByDayRange(begin time.Time, end time.Time, userID uint) ([]Date, error) {
+func (dateRepository *dateRepository) FindByDayRange(begin int, end int, userID uint) ([]Date, error) {
 	var dates []Date
 	if err := dateRepository.DB.Preload("User").Where("begin_time >= ? AND end_time <= ? AND user_id = ?", begin, end, userID).Find(&dates).Error; err != nil {
 		return nil, err

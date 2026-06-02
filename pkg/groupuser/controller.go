@@ -217,14 +217,23 @@ func (config *GroupUserConfig) UpdateGroupUserColor(w http.ResponseWriter, r *ht
 // @Failure 	400 {object} models.ErrorResponse
 // @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
-// @Router		/group-user/ [delete]
+// @Router		/group-user/group/{groupID}/user/{userID} [delete]
 func (config *GroupUserConfig) DeleteGroupUser(w http.ResponseWriter, r *http.Request) {
-	req := &models.GroupUserRequest{}
-	if err := render.Bind(r, req); err != nil {
-		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
+	userID, err := strconv.Atoi(chi.URLParam(r, "user_id"))
+	if err != nil {
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
-	err := config.UserGroupRepository.DeleteByUserIDAndGroupID(req.UserID, req.GroupID)
+	groupID, err := strconv.Atoi(chi.URLParam(r, "group_id"))
+	if err != nil {
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid group ID")
+		return
+	}
+	if userID < 1 || groupID < 1 {
+		errors.RenderError(w, r, http.StatusBadRequest, "User ID and Group ID must be greater than 0")
+		return
+	}
+	err = config.UserGroupRepository.DeleteByUserIDAndGroupID(uint(userID), uint(groupID))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to delete group-user relationship")
 		return

@@ -184,7 +184,7 @@ func (config *GroupConfig) Updategroup(w http.ResponseWriter, r *http.Request) {
 // @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
 // @Router		/group/{id} [delete]
-func (config *GroupConfig) DeleteGroupHandler(w http.ResponseWriter, r *http.Request) {
+func (config *GroupConfig) DeleteGroup(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid group ID")

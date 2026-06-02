@@ -223,13 +223,13 @@ func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.
 // @Tags dates
 // @Accept json
 // @Produce json
-// @Param start query string true "Start date in ISO format (e.g., 2024-01-01T00:00:00Z)"
-// @Param end query string true "End date in ISO format (e.g., 2024-01-31T23:59:59Z)"
+// @Param start query int true "Start date as Unix timestamp"
+// @Param end query int true "End date as Unix timestamp"
 // @Param userID query int false "User ID to filter dates (optional)"
 // @Success 200 {array} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Security 	BearerAuth
-// @Router /date/range [get]
+// @Router /date/range [post]
 func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Request) {
 	var rangeRequest models.AvailabilityRequest
 	if err := render.Bind(r, &rangeRequest); err != nil {

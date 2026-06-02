@@ -3,19 +3,18 @@ package models
 import (
 	"errors"
 	"net/http"
-	"time"
 )
 
 type AvailabilityRequest struct {
-	DateBegin time.Time `json:"date_begin"`
-	DateEnd   time.Time `json:"date_end"`
-	UserID    uint      `json:"user_id"`
+	DateBegin int  `json:"date_begin"`
+	DateEnd   int  `json:"date_end"`
+	UserID    uint `json:"user_id"`
 }
 
 func (a *AvailabilityRequest) Bind(r *http.Request) error {
-	if a.DateBegin.IsZero() {
+	if a.DateBegin == 0 {
 		return errors.New("date_begin must not be null")
-	} else if a.DateEnd.IsZero() {
+	} else if a.DateEnd == 0 {
 		return errors.New("date_end must not be null")
 	} else if a.UserID < 1 {
 		return errors.New("user_id must be >= 1")
@@ -24,8 +23,8 @@ func (a *AvailabilityRequest) Bind(r *http.Request) error {
 }
 
 type AvailabilityResponse struct {
-	ID        uint      `json:"id"`
-	DateBegin time.Time `json:"date_begin"`
-	DateEnd   time.Time `json:"date_end"`
-	UserID    uint      `json:"user_id"`
+	ID        uint `json:"id"`
+	DateBegin int  `json:"date_begin"`
+	DateEnd   int  `json:"date_end"`
+	UserID    uint `json:"user_id"`
 }

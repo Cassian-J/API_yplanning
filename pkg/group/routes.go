@@ -24,6 +24,6 @@ func Routes(config *config.Config) chi.Router {
 	router.Get("/{id}", GroupConfig.GetGroupByID)
 	router.Get("/creator/{id}", GroupConfig.GetGroupByCreatorID)
 	router.Put("/{id}", GroupConfig.Updategroup)
-	router.Delete("/{id}", GroupConfig.DeleteGroupHandler)
+	router.Delete("/{id}", GroupConfig.DeleteGroup)
 	return router
 }

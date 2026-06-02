@@ -9,6 +9,9 @@ type UserRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Name     string `json:"name"`
+	Surname  string `json:"surname"`
+	ColorID  uint   `json:"color_id"`
 }
 
 type CreateUserRequest struct {
@@ -22,6 +25,10 @@ type CreateUserRequest struct {
 type GetUserRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
+}
+
+func (g *GetUserRequest) Bind(r *http.Request) error {
+	panic("unimplemented")
 }
 
 func (u *UserRequest) Bind(r *http.Request) error {

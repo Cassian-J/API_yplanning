@@ -3,6 +3,7 @@ package authentication
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"yplanning/config"
 	"yplanning/database/dbmodel"
@@ -57,14 +58,14 @@ func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create user: "+err.Error())
 		return
 	}
-	user := &models.UserResponse{ID: res.ID, Email: res.Email, Username: res.Username, Name: res.Name, Surname: res.Surname}
+	user := &models.UserResponse{ID: res.ID, Email: res.Email, Username: res.Username}
 
-	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), user.Email)
+	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate token: "+err.Error())
 		return
 	}
-	refreshToken, err := GenerateRefreshToken(os.Getenv("REFRESH_SECRET"), user.Email)
+	refreshToken, err := GenerateRefreshToken(os.Getenv("REFRESH_SECRET"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate refresh token: "+err.Error())
 		return
@@ -73,6 +74,7 @@ func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		TokenType:    "bearer",
+		ID:           user.ID,
 	}
 
 	render.JSON(w, r, tokens)
@@ -106,12 +108,12 @@ func (config *AuthConfig) Login(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusUnauthorized, "Invalid email or password")
 		return
 	}
-	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), user.Email)
+	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate token: "+err.Error())
 		return
 	}
-	refreshToken, err := GenerateRefreshToken(os.Getenv("REFRESH_SECRET"), user.Email)
+	refreshToken, err := GenerateRefreshToken(os.Getenv("REFRESH_SECRET"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate refresh token: "+err.Error())
 		return
@@ -121,6 +123,7 @@ func (config *AuthConfig) Login(w http.ResponseWriter, r *http.Request) {
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		TokenType:    "bearer",
+		ID:           user.ID,
 	}
 
 	render.JSON(w, r, tokens)
@@ -142,23 +145,27 @@ func (config *AuthConfig) Refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email, err := ParseToken(os.Getenv("REFRESH_SECRET"), req.RefreshToken)
+	userID, err := ParseToken(os.Getenv("REFRESH_SECRET"), req.RefreshToken)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusUnauthorized, "Invalid refresh token")
 		return
 	}
-
-	user, err := config.UserRepository.FindByEmail(email)
+	ID, err := strconv.Atoi(userID)
+	if err != nil {
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to parse user ID: "+err.Error())
+		return
+	}
+	user, err := config.UserRepository.FindByID(uint(ID))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusNotFound, "User not found")
 		return
 	}
-	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), user.Email)
+	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate token: "+err.Error())
 		return
 	}
-	refreshToken, err := GenerateRefreshToken(os.Getenv("REFRESH_SECRET"), user.Email)
+	refreshToken, err := GenerateRefreshToken(os.Getenv("REFRESH_SECRET"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate refresh token: "+err.Error())
 		return
@@ -168,6 +175,7 @@ func (config *AuthConfig) Refresh(w http.ResponseWriter, r *http.Request) {
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		TokenType:    "bearer",
+		ID:           user.ID,
 	}
 
 	render.JSON(w, r, tokens)

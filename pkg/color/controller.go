@@ -114,7 +114,7 @@ func (config *ColorConfig) GetColorByID(w http.ResponseWriter, r *http.Request) 
 // @Success 200 {object} models.ColorResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Security 	BearerAuth
-// @Router /color/hex [get]
+// @Router /color/hex [post]
 func (config *ColorConfig) GetByHexCode(w http.ResponseWriter, r *http.Request) {
 	colorRequest := &models.ColorRequest{}
 	if err := render.Bind(r, colorRequest); err != nil {

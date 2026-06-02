@@ -91,15 +91,15 @@ func (config *UserConfig) GetUserByID(w http.ResponseWriter, r *http.Request) {
 // @Success		200	{object}	models.UserResponse
 // @Failure 	400 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
-// @Router		/user/ [get]
+// @Router		/user/ [post]
 func (config *UserConfig) GetUser(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
-	email := r.URL.Query().Get("email")
-
-	if username == "" && email == "" {
-		errors.RenderError(w, r, http.StatusBadRequest, "Either username or email must be provided")
+	req := &models.GetUserRequest{}
+	if err := render.Bind(r, req); err != nil {
+		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request parameters")
 		return
 	}
+	username := req.Username
+	email := req.Email
 
 	var user *dbmodel.User
 	var err error
@@ -155,14 +155,14 @@ func (config *UserConfig) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username}
+	user := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username, Name: req.Name, Surname: req.Surname, ColorID: req.ColorID}
 	updated, err := config.UserRepository.UpdateByID(uint(id), user)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update user")
 		return
 	}
 
-	userResponse := &models.UserResponse{ID: uint(id), Email: updated.Email, Username: updated.Username}
+	userResponse := &models.UserResponse{ID: uint(id), Email: updated.Email, Username: updated.Username, Name: updated.Name, Surname: updated.Surname, ColorID: updated.ColorID}
 	render.JSON(w, r, userResponse)
 }
 

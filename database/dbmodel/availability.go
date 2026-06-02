@@ -1,7 +1,6 @@
 package dbmodel
 
 import (
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -10,8 +9,8 @@ type Availability struct {
 	gorm.Model
 	UserID    uint      `json:"user_id"`
 	User      *User     `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	BeginTime time.Time `json:"begin_time"`
-	EndTime   time.Time `json:"end_time"`
+	BeginTime int       `json:"begin_time"`
+	EndTime   int       `json:"end_time"`
 }
 
 type AvailabilityRepository interface {
