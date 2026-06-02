@@ -2,7 +2,7 @@
 
 Development of a dedicated API for managing collaborative schedules, enabling the identification of shared time slots between multiple users. The API integrates a secure authentication system based on JWT and interactive documentation generated with Swagger.
 
-**Contributors:** Mathis SILOTIA and Cassian JOLY
+**Contributors:** [Mathis SILOTIA](https://github.com/Diarmur) and [Cassian JOLY](https://github.com/Cassian-J)
 
 ---
 
@@ -103,69 +103,30 @@ API_yplanning/
 ├── config/                         # Application configuration
 │
 ├── database/                       # Database layer
-│   ├── dbmodel/                    # Database entities (GORM models)
-│   │   ├── availability.go         # Availability entity
-│   │   ├── color.go                # Color entity
-│   │   ├── date.go                 # Date entity
-│   │   ├── group.go                # Group entity
-│   │   ├── user.go                 # User entity
-│   │   └── user_group.go           # User ↔ Group relationship entity
-│   │
-│   └── database.go                 # Database initialization and connection
+│   └── dbmodel/                    # Database entities (GORM models)
 │
 ├── docs/                           # Swagger / OpenAPI documentation / auto generated files
-│   ├── docs.go
-│   ├── swagger.json
-│   └── swagger.yaml
 │
 ├── pkg/                            # Business modules
-│
 │   ├── Errors/                     # Centralized error handling
-│   │   └── Errors.go
-│   │
 │   ├── authentication/             # Authentication and authorization
-│   │   ├── controller.go           # Login and registration logic
-│   │   ├── jwt.go                  # JWT token management
-│   │   ├── middleware.go           # Authentication middleware
-│   │   └── routes.go               # Authentication routes
-│   │
 │   ├── availability/               # Availability management
-│   │   ├── controller.go
-│   │   └── routes.go
-│   │
 │   ├── color/                      # Color management
-│   │   ├── controller.go
-│   │   └── routes.go
-│   │
 │   ├── date/                       # Date management
-│   │   ├── controller.go
-│   │   └── routes.go
-│   │
 │   ├── group/                      # Group management
-│   │   ├── controller.go
-│   │   └── routes.go
-│   │
 │   ├── user/                       # User management
-│   │   ├── controller.go
-│   │   └── routes.go
-│   │
 │   └── models/                     # DTOs and API request/response models
-│       ├── Error.go
-│       ├── authentication.go
-│       ├── availability.go
-│       ├── color.go
-│       ├── date.go
-│       ├── group.go
-│       └── user.go
-│
-├── .env                            # Environment variables
-├── go.mod                          
-├── go.sum                          
-├── main.go                         
+├── .env                            # Environment variables                    
 └── README.md                       
 ```
 
 ---
+
+## Other Repositories
+If you want to see the other part of the project that use this API :
+- [mobile application](https://github.com/Cassian-J/Mobile_yplanning)
+- [website](https://github.com/Diarmur/YPlanning)
+
 
 ## Support
 
