@@ -99,24 +99,25 @@ For detailed endpoint documentation, visit the Swagger UI once the server is run
 
 ```text
 API_yplanning/
-│
-├── config/                         # Application configuration
-│
-├── database/                       # Database layer
-│   └── dbmodel/                    # Database entities (GORM models)
-│
-├── docs/                           # Swagger / OpenAPI documentation / auto generated files
-│
-├── pkg/                            # Business modules
-│   ├── Errors/                     # Centralized error handling
-│   ├── authentication/             # Authentication and authorization
-│   ├── availability/               # Availability management
-│   ├── color/                      # Color management
-│   ├── date/                       # Date management
-│   ├── group/                      # Group management
-│   ├── user/                       # User management
-│   └── models/                     # DTOs and API request/response models
-├── .env                            # Environment variables                    
+├── API/
+│   ├── config/                         # Application configuration
+│   │  
+│   ├── database/                       # Database layer
+│   │   └── dbmodel/                    # Database entities (GORM models)
+│   │
+│   ├── docs/                           # Swagger / OpenAPI documentation / auto generated files
+│   │
+│   └── pkg/                            # Business modules
+│       ├── Errors/                     # Centralized error handling
+│       ├── authentication/             # Authentication and authorization
+│       ├── availability/               # Availability management
+│       ├── color/                      # Color management
+│       ├── date/                       # Date management
+│       ├── group/                      # Group management
+│       ├── user/                       # User management
+│       └── models/                     # DTOs and API request/response models
+├── Bruno_Yplanning/                    # test files for Postman or Bruno 
+├── .env                                # Environment variables                    
 └── README.md                       
 ```
 
