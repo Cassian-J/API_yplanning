@@ -20,7 +20,6 @@ type UserGroupRepository interface {
 	FindByUserIDAndGroupID(userID uint, groupID uint) (*UserGroup, error)
 	UpdateColorByUserIDAndGroupID(userID uint, groupID uint, colorID uint) error
 	DeleteByUserIDAndGroupID(userID uint, groupID uint) error
-	DeleteByGroupID(groupID uint) error
 }
 
 type userGroupRepository struct {
@@ -79,13 +78,6 @@ func (userGroupRepository *userGroupRepository) UpdateColorByUserIDAndGroupID(us
 
 func (userGroupRepository *userGroupRepository) DeleteByUserIDAndGroupID(userID uint, groupID uint) error {
 	if err := userGroupRepository.DB.Where("user_id = ? AND group_id = ?", userID, groupID).Delete(&UserGroup{}).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (userGroupRepository *userGroupRepository) DeleteByGroupID(groupID uint) error {
-	if err := userGroupRepository.DB.Where("group_id = ?", groupID).Delete(&UserGroup{}).Error; err != nil {
 		return err
 	}
 	return nil

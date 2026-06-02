@@ -113,6 +113,24 @@ definitions:
       name:
         type: string
     type: object
+  models.GroupUserRequest:
+    properties:
+      color_id:
+        type: integer
+      group_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.GroupUserResponse:
+    properties:
+      color_id:
+        type: integer
+      group_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   models.TokenRequest:
     properties:
       refresh_token:
@@ -772,6 +790,238 @@ paths:
       summary: Get dates by user ID
       tags:
       - dates
+  /group-user/:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a group-user relationship by user ID and group ID
+      parameters:
+      - description: GroupUserRequest
+        in: body
+        name: groupUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.GroupUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete group-user relationship
+      tags:
+      - group-users
+    post:
+      consumes:
+      - application/json
+      description: Create a new group-user relationship with the provided user ID,
+        group ID, and optional color ID
+      parameters:
+      - description: GroupUserRequest
+        in: body
+        name: groupUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.GroupUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GroupUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new group-user relationship
+      tags:
+      - group-users
+  /group-user/color:
+    put:
+      consumes:
+      - application/json
+      description: Update the color of a group-user relationship
+      parameters:
+      - description: GroupUserRequest
+        in: body
+        name: groupUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.GroupUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update group-user color
+      tags:
+      - group-users
+  /group-user/group/{groupID}/user/{userID}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a group-user relationship by the user's ID and the group's
+        ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GroupUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get group-user relationship by user ID and group ID
+      tags:
+      - group-users
+  /group-user/group/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of users that belong to a group by the group's
+        ID
+      parameters:
+      - description: Group ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get users by group ID
+      tags:
+      - users
+  /group-user/groups-users/:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all group-user relationships
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GroupUserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all group-user relationships
+      tags:
+      - group-users
+  /group-user/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of groups that a user belongs to by the user's
+        ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GroupResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get groups by user ID
+      tags:
+      - groups
   /group/:
     post:
       consumes:
