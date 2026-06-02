@@ -1,0 +1,26 @@
+info:
+  name: Updategroup
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{base_url}}/group/:GroupID"
+  params:
+    - name: GroupID
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "name":"",
+        "creator_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

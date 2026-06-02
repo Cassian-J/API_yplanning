@@ -1,0 +1,32 @@
+info:
+  name: UpdateDate
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{base_url}}/date/:DateID"
+  params:
+    - name: DateID
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "title":"",
+        "body":"",
+        "date_begin":"",
+        "date_end":"",
+        "user_id":"",
+        "private":"",
+        "recurrence_id":"",
+        "color_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,23 @@
+info:
+  name: UpdateGroupUserColor
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{base_url}}/group-user/color"
+  body:
+    type: json
+    data: |-
+      {
+        "user_id":"",
+        "group_id":"",
+        "color_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

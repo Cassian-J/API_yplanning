@@ -1,0 +1,27 @@
+info:
+  name: UpdateAvailability
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{base_url}}availability/:AvailabilityID"
+  params:
+    - name: AvailabilityID
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "date_begin":"",
+        "date_end":"",
+        "user_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

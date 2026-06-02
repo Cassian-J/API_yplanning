@@ -1,0 +1,19 @@
+info:
+  name: GetAvailabilitiesByUserID
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{base_url}}/availability/user/:UserID"
+  params:
+    - name: UserID
+      value: ""
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,26 @@
+info:
+  name: UpdateColor
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{base_url}}/color/:ColorID"
+  params:
+    - name: ColorID
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "hex_code":"",
+        "name":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

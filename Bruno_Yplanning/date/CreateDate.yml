@@ -1,0 +1,28 @@
+info:
+  name: CreateDate
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/date/"
+  body:
+    type: json
+    data: |-
+      {
+        "title":"",
+        "body":"",
+        "date_begin":"",
+        "date_end":"",
+        "user_id":"",
+        "private":"",
+        "recurrence_id":"",
+        "color_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

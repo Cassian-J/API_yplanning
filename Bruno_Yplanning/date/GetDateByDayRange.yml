@@ -1,0 +1,23 @@
+info:
+  name: GetDateByDayRange
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/date/range"
+  body:
+    type: json
+    data: |-
+      {
+        "date_begin":"",
+        "date_end":"",
+        "user_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

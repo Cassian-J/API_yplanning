@@ -1,0 +1,22 @@
+info:
+  name: DeleteGroupUser
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: "{{base_url}}/group-user/group/:GroupID/user/:UserID"
+  params:
+    - name: GroupID
+      value: ""
+      type: path
+    - name: UserID
+      value: ""
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

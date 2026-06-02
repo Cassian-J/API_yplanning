@@ -1,0 +1,23 @@
+info:
+  name: CreateGroupUser
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/group-user/"
+  body:
+    type: json
+    data: |-
+      {
+        "user_id":"",
+        "group_id":"",
+        "color_id":""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
