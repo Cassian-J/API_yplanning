@@ -36,6 +36,7 @@ REFRESH_SECRET=YourSecureRefreshSecretHere
 
 3. Start the server:
 ```bash
+cd .\API\
 go run main.go
 ```
 
