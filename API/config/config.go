@@ -1,10 +1,11 @@
 package config
 
 import (
+	"os"
 	"yplanning/database"
 	"yplanning/database/dbmodel"
 
-	"github.com/glebarez/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +21,7 @@ type Config struct {
 func New() (*Config, error) {
 	config := &Config{}
 
-	databaseSession, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	databaseSession, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
