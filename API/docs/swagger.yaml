@@ -3,18 +3,18 @@ definitions:
   models.AvailabilityRequest:
     properties:
       date_begin:
-        type: string
+        type: integer
       date_end:
-        type: string
+        type: integer
       user_id:
         type: integer
     type: object
   models.AvailabilityResponse:
     properties:
       date_begin:
-        type: string
+        type: integer
       date_end:
-        type: string
+        type: integer
       id:
         type: integer
       user_id:
@@ -56,9 +56,9 @@ definitions:
       color_id:
         type: integer
       date_begin:
-        type: string
+        type: integer
       date_end:
-        type: string
+        type: integer
       private:
         type: boolean
       recurrence_id:
@@ -75,9 +75,9 @@ definitions:
       color_id:
         type: integer
       date_begin:
-        type: string
+        type: integer
       date_end:
-        type: string
+        type: integer
       id:
         type: integer
       private:
@@ -140,6 +140,8 @@ definitions:
     properties:
       access_token:
         type: string
+      id:
+        type: integer
       refresh_token:
         type: string
       token_type:
@@ -147,9 +149,15 @@ definitions:
     type: object
   models.UserRequest:
     properties:
+      color_id:
+        type: integer
       email:
         type: string
+      name:
+        type: string
       password:
+        type: string
+      surname:
         type: string
       username:
         type: string
@@ -172,7 +180,7 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  title: LocateThis API
+  title: Yplanning API
   version: "1.0"
 paths:
   /auth/login:
@@ -526,7 +534,7 @@ paths:
       tags:
       - colors
   /color/hex:
-    get:
+    post:
       consumes:
       - application/json
       description: Retrieve a color by its hex code
@@ -694,21 +702,21 @@ paths:
       tags:
       - dates
   /date/range:
-    get:
+    post:
       consumes:
       - application/json
       description: Retrieve a list of dates that fall within a specified day range
       parameters:
-      - description: Start date in ISO format (e.g., 2024-01-01T00:00:00Z)
+      - description: Start date as Unix timestamp
         in: query
         name: start
         required: true
-        type: string
-      - description: End date in ISO format (e.g., 2024-01-31T23:59:59Z)
+        type: integer
+      - description: End date as Unix timestamp
         in: query
         name: end
         required: true
-        type: string
+        type: integer
       - description: User ID to filter dates (optional)
         in: query
         name: userID
@@ -791,39 +799,6 @@ paths:
       tags:
       - dates
   /group-user/:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a group-user relationship by user ID and group ID
-      parameters:
-      - description: GroupUserRequest
-        in: body
-        name: groupUser
-        required: true
-        schema:
-          $ref: '#/definitions/models.GroupUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Delete group-user relationship
-      tags:
-      - group-users
     post:
       consumes:
       - application/json
@@ -891,6 +866,39 @@ paths:
       tags:
       - group-users
   /group-user/group/{groupID}/user/{userID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a group-user relationship by user ID and group ID
+      parameters:
+      - description: GroupUserRequest
+        in: body
+        name: groupUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.GroupUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete group-user relationship
+      tags:
+      - group-users
     get:
       consumes:
       - application/json
@@ -1194,7 +1202,7 @@ paths:
       tags:
       - groups
   /user/:
-    get:
+    post:
       consumes:
       - application/json
       description: Retrieve a user by its username or email

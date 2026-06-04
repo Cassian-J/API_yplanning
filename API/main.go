@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"yplanning/config"
 	"yplanning/pkg/authentication"
 	"yplanning/pkg/availability"
@@ -16,11 +15,10 @@ import (
 	_ "yplanning/docs"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// @title			LocateThis API
+// @title			Yplanning API
 // @version			1.0
 // @host			localhost:8080
 // @BasePath		/api
@@ -30,17 +28,13 @@ import (
 func Routes(configuration *config.Config) *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+os.Getenv("PORT")+"/swagger/doc.json"),
+		httpSwagger.URL("http://localhost:"+configuration.Port+"/swagger/doc.json"),
 	))
 
 	router.Mount("/api/auth", authentication.Routes(configuration))
 
 	router.Group(func(r chi.Router) {
-		jwtSecret := os.Getenv("JWT_SECRET")
-		if jwtSecret == "" {
-			log.Fatal("JWT_SECRET is required")
-		}
-		r.Use(authentication.AuthMiddleware(os.Getenv("JWT_SECRET")))
+		r.Use(authentication.AuthMiddleware(configuration.JWTSecret))
 		r.Mount("/api/group", group.Routes(configuration))
 		r.Mount("/api/date", date.Routes(configuration))
 		r.Mount("/api/availability", availability.Routes(configuration))
@@ -53,9 +47,6 @@ func Routes(configuration *config.Config) *chi.Mux {
 }
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println(".env file not found")
-	}
 	// Initialisation de la configuration
 	configuration, err := config.New()
 	if err != nil {
@@ -63,7 +54,7 @@ func main() {
 	}
 	// Initialisation des routes
 	router := Routes(configuration)
-	log.Println("Server running on http://localhost:" + os.Getenv("PORT"))
-	log.Println("Swagger UI available at http://localhost:" + os.Getenv("PORT") + "/swagger/index.html")
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
+	log.Println("Server running on http://localhost:" + configuration.Port)
+	log.Println("Swagger UI available at http://localhost:" + configuration.Port + "/swagger/index.html")
+	log.Fatal(http.ListenAndServe(":"+configuration.Port, router))
 }

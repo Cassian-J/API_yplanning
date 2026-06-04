@@ -461,7 +461,7 @@ const docTemplate = `{
             }
         },
         "/color/hex": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -681,7 +681,7 @@ const docTemplate = `{
             }
         },
         "/date/range": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -700,15 +700,15 @@ const docTemplate = `{
                 "summary": "Get dates by day range",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Start date in ISO format (e.g., 2024-01-01T00:00:00Z)",
+                        "type": "integer",
+                        "description": "Start date as Unix timestamp",
                         "name": "start",
                         "in": "query",
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "End date in ISO format (e.g., 2024-01-31T23:59:59Z)",
+                        "type": "integer",
+                        "description": "End date as Unix timestamp",
                         "name": "end",
                         "in": "query",
                         "required": true
@@ -1020,58 +1020,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a group-user relationship by user ID and group ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "group-users"
-                ],
-                "summary": "Delete group-user relationship",
-                "parameters": [
-                    {
-                        "description": "GroupUserRequest",
-                        "name": "groupUser",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.GroupUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
             }
         },
         "/group-user/color": {
@@ -1167,6 +1115,58 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GroupUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a group-user relationship by user ID and group ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group-users"
+                ],
+                "summary": "Delete group-user relationship",
+                "parameters": [
+                    {
+                        "description": "GroupUserRequest",
+                        "name": "groupUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.GroupUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -1603,7 +1603,7 @@ const docTemplate = `{
             }
         },
         "/user/": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -1827,10 +1827,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "user_id": {
                     "type": "integer"
@@ -1841,10 +1841,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1909,10 +1909,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "private": {
                     "type": "boolean"
@@ -1938,10 +1938,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -2039,6 +2039,9 @@ const docTemplate = `{
                 "access_token": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "refresh_token": {
                     "type": "string"
                 },
@@ -2050,10 +2053,19 @@ const docTemplate = `{
         "models.UserRequest": {
             "type": "object",
             "properties": {
+                "color_id": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "password": {
+                    "type": "string"
+                },
+                "surname": {
                     "type": "string"
                 },
                 "username": {
@@ -2100,7 +2112,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "LocateThis API",
+	Title:            "Yplanning API",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
