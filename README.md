@@ -12,6 +12,7 @@ Development of a dedicated API for managing collaborative schedules, enabling th
 
 - Latest version of Go (starting by the 1.24 version) installed on your system
 - Bruno or Postman for API testing (we recommend Bruno because you can test the links without connection)
+- Docker 
 
 a Swagger exist in the project if you want to test the project without Bruno or Postman
 
@@ -23,12 +24,7 @@ git clone https://github.com/Cassian-J/API_yplanning.git
 cd yplanning
 ```
 
-2. Create an `.env` file in the root directory with the following configuration:
-```env
-PORT=8080
-JWT_SECRET=YourSecureSecretHere
-REFRESH_SECRET=YourSecureRefreshSecretHere
-```
+2. Create an `.env` file in the root directory with the cofiguration of the `.env.exemple`.
 
 💡 **Note:** You can choose any available port. We use 8080 by default.
 
@@ -36,9 +32,9 @@ REFRESH_SECRET=YourSecureRefreshSecretHere
 
 3. Start the server:
 ```bash
-cd .\API\
-go run main.go
+docker compose up
 ```
+it will create a docker container (if docker isn't open it will return an error)
 
 You should see output similar to this:
 ```
@@ -46,7 +42,7 @@ You should see output similar to this:
 2026/01/09 08:31:47 Server running on http://localhost:8080
 2026/01/09 08:31:47 Swagger UI available at http://localhost:8080/swagger/index.html
 ```
-
+Just click on `http://localhost:8080/swagger/index.html` to see the swagger.
 ---
 
 ## Authentication
@@ -108,17 +104,20 @@ API_yplanning/
 │   │
 │   ├── docs/                           # Swagger / OpenAPI documentation / auto generated files
 │   │
-│   └── pkg/                            # Business modules
-│       ├── Errors/                     # Centralized error handling
-│       ├── authentication/             # Authentication and authorization
-│       ├── availability/               # Availability management
-│       ├── color/                      # Color management
-│       ├── date/                       # Date management
-│       ├── group/                      # Group management
-│       ├── user/                       # User management
-│       └── models/                     # DTOs and API request/response models
+│   ├── pkg/                            # Business modules
+│   │   ├── Errors/                     # Centralized error handling
+│   │   ├── authentication/             # Authentication and authorization
+│   │   ├── availability/               # Availability management
+│   │   ├── color/                      # Color management
+│   │   ├── date/                       # Date management
+│   │   ├── group/                      # Group management
+│   │   ├── user/                       # User management
+│   │   └── models/                     # DTOs and API request/response models
+│   └── Dockerfile
 ├── Bruno_Yplanning/                    # test files for Postman or Bruno 
-├── .env                                # Environment variables                    
+├── docker-compose.yml
+├── .env                                # Environment variables    
+├── .env.exemple                
 └── README.md                       
 ```
 
