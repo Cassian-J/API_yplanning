@@ -9,8 +9,8 @@ type User struct {
 	Password string `gorm:"not null" json:"password"`
 	Name     string `json:"name"`
 	Surname  string `json:"surname"`
-	ColorID  uint   `json:"color_id"`
-	Color    *Color `gorm:"not null;constraint:OnDelete:SET NULL;"`
+	ColorID  *uint  `json:"color_id,omitempty"`
+	Color    *Color `gorm:"constraint:OnDelete:SET NULL;"`
 
 	UserGroups []UserGroup `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"user_groups"`
 }

@@ -155,7 +155,7 @@ func (config *UserConfig) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username, Name: req.Name, Surname: req.Surname, ColorID: req.ColorID}
+	user := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username, Name: req.Name, Surname: req.Surname, ColorID: &req.ColorID}
 	updated, err := config.UserRepository.UpdateByID(uint(id), user)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update user")
