@@ -10,6 +10,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - ${PORT_DB}:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   yplanning_api:
     container_name: yplanning-api
@@ -24,6 +30,7 @@ services:
       CONNECTION_STRING: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${PORT_DB}/${POSTGRES_DB}?sslmode=disable
     ports:
       - ${PORT}:${PORT}
+    restart: unless-stopped
 
 volumes:
   postgres_data:
