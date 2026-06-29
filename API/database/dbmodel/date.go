@@ -42,53 +42,105 @@ func (dateRepository *dateRepository) Create(date *Date) (*Date, error) {
 	if err := dateRepository.DB.Create(date).Error; err != nil {
 		return nil, err
 	}
+
+	// reload avec relations
+	if err := dateRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Color").
+		Preload("Recurrence").
+		First(date, date.ID).Error; err != nil {
+		return nil, err
+	}
+
 	return date, nil
 }
 
 func (dateRepository *dateRepository) FindAll() ([]Date, error) {
 	var dates []Date
-	if err := dateRepository.DB.Find(&dates).Error; err != nil {
+
+	if err := dateRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Color").
+		Preload("Recurrence").
+		Find(&dates).Error; err != nil {
 		return nil, err
 	}
+
 	return dates, nil
 }
 
 func (dateRepository *dateRepository) FindByID(id uint) (*Date, error) {
 	var date Date
-	if err := dateRepository.DB.First(&date, id).Error; err != nil {
+
+	if err := dateRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Color").
+		Preload("Recurrence").
+		First(&date, id).Error; err != nil {
 		return nil, err
 	}
+
 	return &date, nil
 }
 
 func (dateRepository *dateRepository) FindByUserID(userID uint) ([]Date, error) {
 	var dates []Date
-	if err := dateRepository.DB.Preload("User").Find(&dates, userID).Error; err != nil {
+
+	if err := dateRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Color").
+		Preload("Recurrence").
+		Where("user_id = ?", userID).
+		Find(&dates).Error; err != nil {
 		return nil, err
 	}
+
 	return dates, nil
 }
 
 func (dateRepository *dateRepository) FindByRecurrenceID(recurrenceID uint) (*Date, error) {
 	var date Date
-	if err := dateRepository.DB.Preload("Recurrence").First(&date, recurrenceID).Error; err != nil {
+
+	if err := dateRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Color").
+		Preload("Recurrence").
+		First(&date, recurrenceID).Error; err != nil {
 		return nil, err
 	}
+
 	return &date, nil
 }
 
 func (dateRepository *dateRepository) FindByDayRange(begin int, end int, userID uint) ([]Date, error) {
 	var dates []Date
-	if err := dateRepository.DB.Preload("User").Where("begin_time >= ? AND end_time <= ? AND user_id = ?", begin, end, userID).Find(&dates).Error; err != nil {
+
+	if err := dateRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Color").
+		Preload("Recurrence").
+		Where("begin_time >= ? AND end_time <= ? AND user_id = ?", begin, end, userID).
+		Find(&dates).Error; err != nil {
 		return nil, err
 	}
+
 	return dates, nil
 }
 
 func (dateRepository *dateRepository) UpdateByID(id uint, date *Date) error {
-	if err := dateRepository.DB.Model(&Date{}).Where("id = ?", id).Updates(date).Error; err != nil {
+	if err := dateRepository.DB.
+		Model(&Date{}).
+		Where("id = ?", id).
+		Updates(date).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 

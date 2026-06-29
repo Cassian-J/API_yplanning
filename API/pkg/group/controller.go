@@ -43,8 +43,7 @@ func (config *GroupConfig) CreateGroup(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create group")
 		return
 	}
-	groupResponse := &models.GroupResponse{ID: created.ID, Name: created.Name, CreatorID: created.CreatorID}
-	render.JSON(w, r, groupResponse)
+	render.JSON(w, r, models.ToGroupResponse(created))
 }
 
 // @Summary		Get all groups
@@ -64,11 +63,7 @@ func (config *GroupConfig) GetAllGroups(w http.ResponseWriter, r *http.Request) 
 
 	GroupResponse := make([]models.GroupResponse, 0)
 	for _, group := range groups {
-		GroupResponse = append(GroupResponse, models.GroupResponse{
-			ID:        group.ID,
-			Name:      group.Name,
-			CreatorID: group.CreatorID,
-		})
+		GroupResponse = append(GroupResponse, *models.ToGroupResponse(&group))
 	}
 	render.JSON(w, r, GroupResponse)
 }
@@ -99,7 +94,7 @@ func (config *GroupConfig) GetGroupByID(w http.ResponseWriter, r *http.Request) 
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve group")
 		return
 	}
-	groupResponse := &models.GroupResponse{ID: group.ID, Name: group.Name, CreatorID: group.CreatorID}
+	groupResponse := models.ToGroupResponse(group)
 	render.JSON(w, r, groupResponse)
 }
 
@@ -129,7 +124,7 @@ func (config *GroupConfig) GetGroupByCreatorID(w http.ResponseWriter, r *http.Re
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve group")
 		return
 	}
-	groupResponse := &models.GroupResponse{ID: group.ID, Name: group.Name, CreatorID: group.CreatorID}
+	groupResponse := models.ToGroupResponse(group)
 	render.JSON(w, r, groupResponse)
 }
 
@@ -170,7 +165,7 @@ func (config *GroupConfig) Updategroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	groupResponse := &models.GroupResponse{ID: uint(id), Name: updated.Name, CreatorID: updated.CreatorID}
+	groupResponse := models.ToGroupResponse(updated)
 	render.JSON(w, r, groupResponse)
 }
 

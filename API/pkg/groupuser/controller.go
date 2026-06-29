@@ -43,8 +43,7 @@ func (config *GroupUserConfig) CreateGroupUser(w http.ResponseWriter, r *http.Re
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create group-user relationship")
 		return
 	}
-	groupUserResponse := &models.GroupUserResponse{UserID: created.UserID, GroupID: created.GroupID, ColorID: created.ColorID}
-	render.JSON(w, r, groupUserResponse)
+	render.JSON(w, r, models.ToGroupUserResponse(created))
 }
 
 // @Summary		Get all group-user relationships
@@ -65,7 +64,7 @@ func (config *GroupUserConfig) GetAllGroupUsers(w http.ResponseWriter, r *http.R
 	}
 	groupUserResponse := make([]models.GroupUserResponse, 0)
 	for _, groupUser := range groupUsers {
-		groupUserResponse = append(groupUserResponse, models.GroupUserResponse{UserID: groupUser.UserID, GroupID: groupUser.GroupID, ColorID: groupUser.ColorID})
+		groupUserResponse = append(groupUserResponse, *models.ToGroupUserResponse(&groupUser))
 	}
 	render.JSON(w, r, groupUserResponse)
 }
@@ -103,7 +102,7 @@ func (config *GroupUserConfig) GetGroupsByUserID(w http.ResponseWriter, r *http.
 			errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve group")
 			return
 		}
-		groupResponse = append(groupResponse, models.GroupResponse{ID: group.ID, Name: group.Name, CreatorID: group.CreatorID})
+		groupResponse = append(groupResponse, *models.ToGroupResponse(group))
 	}
 	render.JSON(w, r, groupResponse)
 }
@@ -141,7 +140,7 @@ func (config *GroupUserConfig) GetUsersByGroupID(w http.ResponseWriter, r *http.
 			errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve user")
 			return
 		}
-		userResponse = append(userResponse, models.UserResponse{ID: user.ID, Username: user.Username, Email: user.Email, Name: user.Name, Surname: user.Surname, ColorID: user.ColorID})
+		userResponse = append(userResponse, *models.ToUserResponse(user))
 	}
 	render.JSON(w, r, userResponse)
 }
@@ -178,8 +177,7 @@ func (config *GroupUserConfig) GetGroupUserByUserIDAndGroupID(w http.ResponseWri
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve group-user relationship")
 		return
 	}
-	groupUserResponse := &models.GroupUserResponse{UserID: groupUser.UserID, GroupID: groupUser.GroupID, ColorID: groupUser.ColorID}
-	render.JSON(w, r, groupUserResponse)
+	render.JSON(w, r, models.ToGroupUserResponse(groupUser))
 }
 
 // @Summary		Update group-user color

@@ -39,14 +39,8 @@ func (config *UserConfig) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	UserResponse := make([]models.UserResponse, 0)
 	for _, user := range users {
-		UserResponse = append(UserResponse, models.UserResponse{
-			ID:       user.ID,
-			Username: user.Username,
-			Email:    user.Email,
-			Name:     user.Name,
-			Surname:  user.Surname,
-			ColorID:  user.ColorID,
-		})
+
+		UserResponse = append(UserResponse, *models.ToUserResponse(&user))
 	}
 	render.JSON(w, r, UserResponse)
 }
@@ -77,8 +71,7 @@ func (config *UserConfig) GetUserByID(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve user")
 		return
 	}
-	userResponse := &models.UserResponse{ID: user.ID, Email: user.Email, Username: user.Username}
-	render.JSON(w, r, userResponse)
+	render.JSON(w, r, models.ToUserResponse(user))
 }
 
 // @Summary		Get user by email or username
@@ -114,16 +107,7 @@ func (config *UserConfig) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userResponse := &models.UserResponse{
-		ID:       user.ID,
-		Email:    user.Email,
-		Username: user.Username,
-		Name:     user.Name,
-		Surname:  user.Surname,
-		ColorID:  user.ColorID,
-	}
-
-	render.JSON(w, r, userResponse)
+	render.JSON(w, r, models.ToUserResponse(user))
 }
 
 // @Summary		Update a user
@@ -161,9 +145,7 @@ func (config *UserConfig) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update user")
 		return
 	}
-
-	userResponse := &models.UserResponse{ID: uint(id), Email: updated.Email, Username: updated.Username, Name: updated.Name, Surname: updated.Surname, ColorID: updated.ColorID}
-	render.JSON(w, r, userResponse)
+	render.JSON(w, r, models.ToUserResponse(updated))
 }
 
 // @Summary		Delete a user

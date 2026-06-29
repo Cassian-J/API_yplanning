@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"net/http"
+	"yplanning/database/dbmodel"
 )
 
 type ColorRequest struct {
@@ -23,4 +24,16 @@ type ColorResponse struct {
 	ID      uint   `json:"id"`
 	HexCode string `json:"hex_code"`
 	Name    string `json:"name"`
+}
+
+func ToColorResponse(color *dbmodel.Color) *ColorResponse {
+	if color == nil {
+		return nil
+	}
+
+	return &ColorResponse{
+		ID:      color.ID,
+		Name:    color.Name,
+		HexCode: color.HexCode,
+	}
 }

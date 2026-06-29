@@ -37,46 +37,80 @@ func (userRepository *userRepository) Create(user *User) (*User, error) {
 	if err := userRepository.DB.Create(user).Error; err != nil {
 		return nil, err
 	}
+
+	if err := userRepository.DB.Preload("Color").First(user, user.ID).Error; err != nil {
+		return nil, err
+	}
+
 	return user, nil
 }
 
 func (userRepository *userRepository) FindAll() ([]User, error) {
 	var users []User
-	if err := userRepository.DB.Find(&users).Error; err != nil {
+
+	if err := userRepository.DB.
+		Preload("Color").
+		Find(&users).Error; err != nil {
 		return nil, err
 	}
+
 	return users, nil
 }
 
 func (userRepository *userRepository) FindByID(id uint) (*User, error) {
 	var user User
-	if err := userRepository.DB.First(&user, id).Error; err != nil {
+
+	if err := userRepository.DB.
+		Preload("Color").
+		First(&user, id).Error; err != nil {
 		return nil, err
 	}
+
 	return &user, nil
 }
 
 func (userRepository *userRepository) FindByEmail(email string) (*User, error) {
 	var user User
-	if err := userRepository.DB.Where("email = ?", email).First(&user).Error; err != nil {
+
+	if err := userRepository.DB.
+		Preload("Color").
+		Where("email = ?", email).
+		First(&user).Error; err != nil {
 		return nil, err
 	}
+
 	return &user, nil
 }
 
 func (userRepository *userRepository) FindByUsername(username string) (*User, error) {
 	var user User
-	if err := userRepository.DB.Where("username = ?", username).First(&user).Error; err != nil {
+
+	if err := userRepository.DB.
+		Preload("Color").
+		Where("username = ?", username).
+		First(&user).Error; err != nil {
 		return nil, err
 	}
+
 	return &user, nil
 }
 
 func (userRepository *userRepository) UpdateByID(id uint, user *User) (*User, error) {
-	if err := userRepository.DB.Model(&User{}).Where("id = ?", id).Updates(user).Error; err != nil {
+	if err := userRepository.DB.
+		Model(&User{}).
+		Where("id = ?", id).
+		Updates(user).Error; err != nil {
 		return nil, err
 	}
-	return user, nil
+
+	var updatedUser User
+	if err := userRepository.DB.
+		Preload("Color").
+		First(&updatedUser, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &updatedUser, nil
 }
 
 func (userRepository *userRepository) DeleteByID(id uint) error {

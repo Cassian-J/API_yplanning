@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"net/http"
+	"yplanning/database/dbmodel"
 )
 
 type GroupRequest struct {
@@ -20,7 +21,19 @@ func (a *GroupRequest) Bind(r *http.Request) error {
 }
 
 type GroupResponse struct {
-	ID        uint   `json:"id"`
-	Name      string `json:"name"`
-	CreatorID uint   `json:"creator_id"`
+	ID      uint         `json:"id"`
+	Name    string       `json:"name"`
+	Creator *UserResponse `json:"creator"`
+}
+
+func ToGroupResponse(group *dbmodel.Group) *GroupResponse {
+	if group == nil {
+		return nil
+	}
+
+	return &GroupResponse{
+		ID:      group.ID,
+		Name:    group.Name,
+		Creator: ToUserResponse(group.Creator),
+	}
 }
