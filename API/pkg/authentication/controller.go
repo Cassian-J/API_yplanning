@@ -85,12 +85,12 @@ func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
 // @Tags authentication
 // @Accept json
 // @Produce json
-// @Param user body models.UserRequest true "User login information"
+// @Param user body models.LoginRequest true "User login information"
 // @Success 200 {object} models.TokenResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Router /auth/login [post]
 func (config *AuthConfig) Login(w http.ResponseWriter, r *http.Request) {
-	var req models.UserRequest
+	var req models.LoginRequest
 	if err := render.DecodeJSON(r.Body, &req); err != nil {
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request body: "+err.Error())
 		return

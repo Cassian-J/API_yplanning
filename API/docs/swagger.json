@@ -5,7 +5,6 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
     "basePath": "/api",
     "paths": {
         "/auth/login": {
@@ -28,7 +27,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserRequest"
+                            "$ref": "#/definitions/models.LoginRequest"
                         }
                     }
                 ],
@@ -903,12 +902,9 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success message",
+                        "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.DateResponse"
                         }
                     },
                     "400": {
@@ -1842,8 +1838,8 @@
                 "id": {
                     "type": "integer"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
                 }
             }
         },
@@ -1875,6 +1871,9 @@
         "models.CreateUserRequest": {
             "type": "object",
             "properties": {
+                "color_id": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1927,8 +1926,8 @@
                 "body": {
                     "type": "string"
                 },
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
                 "date_begin": {
                     "type": "integer"
@@ -1948,8 +1947,8 @@
                 "title": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
                 }
             }
         },
@@ -1979,8 +1978,8 @@
         "models.GroupResponse": {
             "type": "object",
             "properties": {
-                "creator_id": {
-                    "type": "integer"
+                "creator": {
+                    "$ref": "#/definitions/models.UserResponse"
                 },
                 "id": {
                     "type": "integer"
@@ -2007,14 +2006,28 @@
         "models.GroupUserResponse": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
-                "group_id": {
-                    "type": "integer"
+                "group": {
+                    "$ref": "#/definitions/models.GroupResponse"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
+                }
+            }
+        },
+        "models.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -2069,8 +2082,8 @@
         "models.UserResponse": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
                 "email": {
                     "type": "string"

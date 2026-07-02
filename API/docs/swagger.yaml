@@ -17,8 +17,8 @@ definitions:
         type: integer
       id:
         type: integer
-      user_id:
-        type: integer
+      user:
+        $ref: '#/definitions/models.UserResponse'
     type: object
   models.ColorRequest:
     properties:
@@ -38,6 +38,8 @@ definitions:
     type: object
   models.CreateUserRequest:
     properties:
+      color_id:
+        type: integer
       email:
         type: string
       name:
@@ -72,8 +74,8 @@ definitions:
     properties:
       body:
         type: string
-      color_id:
-        type: integer
+      color:
+        $ref: '#/definitions/models.ColorResponse'
       date_begin:
         type: integer
       date_end:
@@ -86,8 +88,8 @@ definitions:
         type: integer
       title:
         type: string
-      user_id:
-        type: integer
+      user:
+        $ref: '#/definitions/models.UserResponse'
     type: object
   models.ErrorResponse:
     properties:
@@ -106,8 +108,8 @@ definitions:
     type: object
   models.GroupResponse:
     properties:
-      creator_id:
-        type: integer
+      creator:
+        $ref: '#/definitions/models.UserResponse'
       id:
         type: integer
       name:
@@ -124,12 +126,21 @@ definitions:
     type: object
   models.GroupUserResponse:
     properties:
-      color_id:
-        type: integer
-      group_id:
-        type: integer
-      user_id:
-        type: integer
+      color:
+        $ref: '#/definitions/models.ColorResponse'
+      group:
+        $ref: '#/definitions/models.GroupResponse'
+      user:
+        $ref: '#/definitions/models.UserResponse'
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
     type: object
   models.TokenRequest:
     properties:
@@ -164,8 +175,8 @@ definitions:
     type: object
   models.UserResponse:
     properties:
-      color_id:
-        type: integer
+      color:
+        $ref: '#/definitions/models.ColorResponse'
       email:
         type: string
       id:
@@ -177,7 +188,6 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
   title: Yplanning API
@@ -194,7 +204,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.UserRequest'
+          $ref: '#/definitions/models.LoginRequest'
       produces:
       - application/json
       responses:
@@ -664,11 +674,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: Success message
+          description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.DateResponse'
         "400":
           description: Bad Request
           schema:

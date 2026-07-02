@@ -20,7 +20,6 @@ import (
 
 // @title			Yplanning API
 // @version			1.0
-// @host			localhost:8080
 // @BasePath		/api
 // @securityDefinitions.apikey	BearerAuth
 // @in				header
@@ -28,7 +27,7 @@ import (
 func Routes(configuration *config.Config) *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+configuration.Port+"/swagger/doc.json"),
+		httpSwagger.URL("/swagger/doc.json"),
 	))
 
 	router.Mount("/api/auth", authentication.Routes(configuration))
@@ -54,7 +53,7 @@ func main() {
 	}
 	// Initialisation des routes
 	router := Routes(configuration)
-	log.Println("Server running on http://localhost:" + configuration.Port)
-	log.Println("Swagger UI available at http://localhost:" + configuration.Port + "/swagger/index.html")
+	log.Println("Server running on http://" + configuration.ADDRESS_IP + ":" + configuration.Port)
+	log.Println("Swagger UI available at http://" + configuration.ADDRESS_IP + ":" + configuration.Port + "/swagger/index.html")
 	log.Fatal(http.ListenAndServe(":"+configuration.Port, router))
 }

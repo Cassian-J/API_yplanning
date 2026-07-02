@@ -16,6 +16,7 @@ type Constants struct {
 	Port             string `yaml:"port"`
 	JWTSecret        string `yaml:"jwt_secret"`
 	ConnectionString string `yaml:"connection_string"`
+	ADDRESS_IP       string `yaml:"address_ip"`
 }
 
 type Config struct {

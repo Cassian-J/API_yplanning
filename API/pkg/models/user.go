@@ -15,6 +15,12 @@ type UserRequest struct {
 	ColorID  uint   `json:"color_id"`
 }
 
+type LoginRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type CreateUserRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`

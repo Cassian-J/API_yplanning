@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserRequest"
+                            "$ref": "#/definitions/models.LoginRequest"
                         }
                     }
                 ],
@@ -910,12 +910,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success message",
+                        "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.DateResponse"
                         }
                     },
                     "400": {
@@ -1849,8 +1846,8 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
                 }
             }
         },
@@ -1882,6 +1879,9 @@ const docTemplate = `{
         "models.CreateUserRequest": {
             "type": "object",
             "properties": {
+                "color_id": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1934,8 +1934,8 @@ const docTemplate = `{
                 "body": {
                     "type": "string"
                 },
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
                 "date_begin": {
                     "type": "integer"
@@ -1955,8 +1955,8 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
                 }
             }
         },
@@ -1986,8 +1986,8 @@ const docTemplate = `{
         "models.GroupResponse": {
             "type": "object",
             "properties": {
-                "creator_id": {
-                    "type": "integer"
+                "creator": {
+                    "$ref": "#/definitions/models.UserResponse"
                 },
                 "id": {
                     "type": "integer"
@@ -2014,14 +2014,28 @@ const docTemplate = `{
         "models.GroupUserResponse": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
-                "group_id": {
-                    "type": "integer"
+                "group": {
+                    "$ref": "#/definitions/models.GroupResponse"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
+                }
+            }
+        },
+        "models.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -2076,8 +2090,8 @@ const docTemplate = `{
         "models.UserResponse": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
                 "email": {
                     "type": "string"
@@ -2109,7 +2123,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Yplanning API",
