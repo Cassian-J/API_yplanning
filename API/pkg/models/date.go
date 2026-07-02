@@ -38,7 +38,7 @@ type DateResponse struct {
 	DateEnd      int64            `json:"date_end"`
 	User         *UserResponse  `json:"user"`
 	Private      bool           `json:"private"`
-	RecurrenceID uint           `json:"recurrence_id"`
+	RecurrenceID *uint           `json:"recurrence_id"`
 	Color        *ColorResponse `json:"color"`
 }
 

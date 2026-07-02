@@ -14,7 +14,6 @@ import (
 
 	_ "yplanning/docs"
 
-	"github.com/rs/cors"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -47,29 +46,14 @@ func Routes(configuration *config.Config) *chi.Mux {
 }
 
 func main() {
-
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"*"},
-		ExposedHeaders:   []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           300,
-	})
-
-	if err := godotenv.Load(); err != nil {
-		log.Println(".env file not found")
-	}
 	// Initialisation de la configuration
 	configuration, err := config.New()
 	if err != nil {
 		log.Panicln("Configuration error:", err)
 	}
 	// Initialisation des routes
-	
 	router := Routes(configuration)
-	handler := c.Handler(router)
-	log.Println("Server running on http://localhost:" + os.Getenv("PORT"))
-	log.Println("Swagger UI available at http://localhost:" + os.Getenv("PORT") + "/swagger/index.html")
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), handler))
+	log.Println("Server running on http://" + configuration.ADDRESS_IP + ":" + configuration.Port)
+	log.Println("Swagger UI available at http://" + configuration.ADDRESS_IP + ":" + configuration.Port + "/swagger/index.html")
+	log.Fatal(http.ListenAndServe(":"+configuration.Port, router))
 }

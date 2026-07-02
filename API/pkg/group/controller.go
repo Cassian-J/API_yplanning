@@ -56,7 +56,13 @@ func (config *GroupConfig) CreateGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	groupResponse := &models.GroupResponse{ID: created.ID, Name: created.Name, CreatorID: created.CreatorID}
+	creator, err := config.UserRepository.FindByID(req.CreatorID)
+	if err != nil {
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve creator")
+		return
+	}
+
+	groupResponse := &models.GroupResponse{ID: created.ID, Name: created.Name, Creator: models.ToUserResponse(creator)}
 	render.JSON(w, r, groupResponse)
 }
 
