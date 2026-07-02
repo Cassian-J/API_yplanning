@@ -52,7 +52,7 @@ func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	req.Password = string(hashedPassword)
 
-	userEntry := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username, ColorID: req.ColorID}
+	userEntry := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username}
 	res, err := config.UserRepository.Create(userEntry)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create user: "+err.Error())

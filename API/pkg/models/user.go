@@ -27,7 +27,6 @@ type CreateUserRequest struct {
 	Password string `json:"password"`
 	Name     string `json:"name"`
 	Surname  string `json:"surname"`
-	ColorID  *uint  `json:"color_id,omitempty"`
 }
 
 type GetUserRequest struct {
