@@ -1,6 +1,7 @@
 package date
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -49,6 +50,7 @@ func (config *DateConfig) CreateDate(w http.ResponseWriter, r *http.Request) {
 	}
 	createdDate, err := config.DateRepository.Create(date)
 	if err != nil {
+		log.Println(err)
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create date")
 		return
 	}

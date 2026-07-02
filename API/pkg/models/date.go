@@ -14,7 +14,7 @@ type DateRequest struct {
 	UserID       uint   `json:"user_id"`
 	Private      bool   `json:"private"`
 	RecurrenceID *uint  `json:"recurrence_id"`
-	ColorID      uint   `json:"color_id"`
+	ColorID      *uint   `json:"color_id"`
 }
 
 func (u *DateRequest) Bind(r *http.Request) error {

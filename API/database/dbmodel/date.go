@@ -15,7 +15,7 @@ type Date struct {
 	Private      bool   `json:"private"`
 	RecurrenceID *uint  `json:"recurrence_id"`
 	Recurrence   *Date  `gorm:"constraint:OnDelete:SET NULL;"`
-	ColorID      uint   `json:"color_id"`
+	ColorID      *uint   `json:"color_id"`
 	Color        *Color `gorm:"null;constraint:OnDelete:SET NULL;"`
 }
 
