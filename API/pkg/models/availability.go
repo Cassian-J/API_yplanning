@@ -3,12 +3,13 @@ package models
 import (
 	"errors"
 	"net/http"
+	"yplanning/database/dbmodel"
 )
 
 type AvailabilityRequest struct {
-    DateBegin int64 `json:"dateBegin"`
-    DateEnd   int64 `json:"dateEnd"`
-    UserID    uint  `json:"userId"`
+	DateBegin int64 `json:"dateBegin"`
+	DateEnd   int64 `json:"dateEnd"`
+	UserID    uint  `json:"userId"`
 }
 
 func (a *AvailabilityRequest) Bind(r *http.Request) error {
@@ -23,8 +24,22 @@ func (a *AvailabilityRequest) Bind(r *http.Request) error {
 }
 
 type AvailabilityResponse struct {
-    ID        uint  `json:"id"`
-    DateBegin int64 `json:"dateBegin"`
-    DateEnd   int64 `json:"dateEnd"`
-    UserID    uint  `json:"userId"`
+	ID        uint          `json:"id"`
+	DateBegin int64         `json:"dateBegin"`
+	DateEnd   int64         `json:"dateEnd"`
+	User      *UserResponse `json:"user"`
+}
+
+func ToAvailabilityResponse(availability *dbmodel.Availability) *AvailabilityResponse {
+
+	if availability == nil {
+		return nil
+	}
+
+	return &AvailabilityResponse{
+		ID:        availability.ID,
+		DateBegin: availability.BeginTime,
+		DateEnd:   availability.EndTime,
+		User:      ToUserResponse(availability.User),
+	}
 }

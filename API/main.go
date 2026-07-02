@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"yplanning/config"
 	"yplanning/pkg/authentication"
 	"yplanning/pkg/availability"
@@ -17,13 +16,11 @@ import (
 
 	"github.com/rs/cors"
 	"github.com/go-chi/chi/v5"
-	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// @title			LocateThis API
+// @title			Yplanning API
 // @version			1.0
-// @host			localhost:8080
 // @BasePath		/api
 // @securityDefinitions.apikey	BearerAuth
 // @in				header
@@ -31,17 +28,13 @@ import (
 func Routes(configuration *config.Config) *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+os.Getenv("PORT")+"/swagger/doc.json"),
+		httpSwagger.URL("/swagger/doc.json"),
 	))
 
 	router.Mount("/api/auth", authentication.Routes(configuration))
 
 	router.Group(func(r chi.Router) {
-		jwtSecret := os.Getenv("JWT_SECRET")
-		if jwtSecret == "" {
-			log.Fatal("JWT_SECRET is required")
-		}
-		r.Use(authentication.AuthMiddleware(os.Getenv("JWT_SECRET")))
+		r.Use(authentication.AuthMiddleware(configuration.JWTSecret))
 		r.Mount("/api/group", group.Routes(configuration))
 		r.Mount("/api/date", date.Routes(configuration))
 		r.Mount("/api/availability", availability.Routes(configuration))

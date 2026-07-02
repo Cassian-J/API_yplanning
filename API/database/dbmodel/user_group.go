@@ -34,45 +34,103 @@ func (userGroupRepository *userGroupRepository) Create(userGroup *UserGroup) (*U
 	if err := userGroupRepository.DB.Create(userGroup).Error; err != nil {
 		return nil, err
 	}
-	return userGroup, nil
+
+	var result UserGroup
+
+	if err := userGroupRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Group").
+		Preload("Group.User").
+		Preload("Group.User.Color").
+		Preload("Color").
+		Where("user_id = ? AND group_id = ?", userGroup.UserID, userGroup.GroupID).
+		First(&result).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }
 
 func (userGroupRepository *userGroupRepository) FindAll() ([]UserGroup, error) {
 	var userGroups []UserGroup
-	if err := userGroupRepository.DB.Find(&userGroups).Error; err != nil {
+
+	if err := userGroupRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Group").
+		Preload("Group.User").
+		Preload("Group.User.Color").
+		Preload("Color").
+		Find(&userGroups).Error; err != nil {
 		return nil, err
 	}
+
 	return userGroups, nil
 }
 
 func (userGroupRepository *userGroupRepository) FindByUserID(userID uint) ([]UserGroup, error) {
 	var userGroups []UserGroup
-	if err := userGroupRepository.DB.Preload("User").Where("user_id = ?", userID).Find(&userGroups).Error; err != nil {
+
+	if err := userGroupRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Group").
+		Preload("Group.User").
+		Preload("Group.User.Color").
+		Preload("Color").
+		Where("user_id = ?", userID).
+		Find(&userGroups).Error; err != nil {
 		return nil, err
 	}
+
 	return userGroups, nil
 }
 
 func (userGroupRepository *userGroupRepository) FindByGroupID(groupID uint) ([]UserGroup, error) {
 	var userGroups []UserGroup
-	if err := userGroupRepository.DB.Preload("Group").Where("group_id = ?", groupID).Find(&userGroups).Error; err != nil {
+
+	if err := userGroupRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Group").
+		Preload("Group.User").
+		Preload("Group.User.Color").
+		Preload("Color").
+		Where("group_id = ?", groupID).
+		Find(&userGroups).Error; err != nil {
 		return nil, err
 	}
+
 	return userGroups, nil
 }
 
 func (userGroupRepository *userGroupRepository) FindByUserIDAndGroupID(userID uint, groupID uint) (*UserGroup, error) {
 	var userGroup UserGroup
-	if err := userGroupRepository.DB.Preload("User").Preload("Group").Where("user_id = ? AND group_id = ?", userID, groupID).First(&userGroup).Error; err != nil {
+
+	if err := userGroupRepository.DB.
+		Preload("User").
+		Preload("User.Color").
+		Preload("Group").
+		Preload("Group.User").
+		Preload("Group.User.Color").
+		Preload("Color").
+		Where("user_id = ? AND group_id = ?", userID, groupID).
+		First(&userGroup).Error; err != nil {
 		return nil, err
 	}
+
 	return &userGroup, nil
 }
 
 func (userGroupRepository *userGroupRepository) UpdateColorByUserIDAndGroupID(userID uint, groupID uint, colorID uint) error {
-	if err := userGroupRepository.DB.Model(&UserGroup{}).Where("user_id = ? AND group_id = ?", userID, groupID).Update("color_id", colorID).Error; err != nil {
+	if err := userGroupRepository.DB.
+		Model(&UserGroup{}).
+		Where("user_id = ? AND group_id = ?", userID, groupID).
+		Update("color_id", colorID).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 

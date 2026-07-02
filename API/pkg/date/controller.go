@@ -52,18 +52,8 @@ func (config *DateConfig) CreateDate(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create date")
 		return
 	}
-	dateResponse := &models.DateResponse{
-		ID:           createdDate.ID,
-		Title:        createdDate.Title,
-		Body:         createdDate.Body,
-		DateBegin:    createdDate.BeginTime,
-		DateEnd:      createdDate.EndTime,
-		UserID:       createdDate.UserID,
-		Private:      createdDate.Private,
-		RecurrenceID: createdDate.RecurrenceID,
-		ColorID:      createdDate.ColorID,
-	}
-	render.JSON(w, r, dateResponse)
+
+	render.JSON(w, r, models.ToDateResponse(createdDate))
 }
 
 // @Summary Get all dates
@@ -81,21 +71,14 @@ func (config *DateConfig) GetAllDates(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve dates")
 		return
 	}
-	DateResponse := make([]models.DateResponse, 0)
-	for _, date := range dates {
-		DateResponse = append(DateResponse, models.DateResponse{
-			ID:           date.ID,
-			Title:        date.Title,
-			Body:         date.Body,
-			DateBegin:    date.BeginTime,
-			DateEnd:      date.EndTime,
-			UserID:       date.UserID,
-			Private:      date.Private,
-			RecurrenceID: date.RecurrenceID,
-			ColorID:      date.ColorID,
-		})
+
+	responses := make([]models.DateResponse, 0, len(dates))
+
+	for _, d := range dates {
+		responses = append(responses, *models.ToDateResponse(&d))
 	}
-	render.JSON(w, r, DateResponse)
+
+	render.JSON(w, r, responses)
 }
 
 // @Summary Get date by ID
@@ -123,18 +106,8 @@ func (config *DateConfig) GetDateByID(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve date")
 		return
 	}
-	dateResponse := &models.DateResponse{
-		ID:           date.ID,
-		Title:        date.Title,
-		Body:         date.Body,
-		DateBegin:    date.BeginTime,
-		DateEnd:      date.EndTime,
-		UserID:       date.UserID,
-		Private:      date.Private,
-		RecurrenceID: date.RecurrenceID,
-		ColorID:      date.ColorID,
-	}
-	render.JSON(w, r, dateResponse)
+
+	render.JSON(w, r, models.ToDateResponse(date))
 }
 
 // @Summary Get dates by user ID
@@ -162,21 +135,14 @@ func (config *DateConfig) GetDatesByUserID(w http.ResponseWriter, r *http.Reques
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve dates")
 		return
 	}
-	dateResponse := make([]models.DateResponse, 0)
-	for _, date := range dates {
-		dateResponse = append(dateResponse, models.DateResponse{
-			ID:           date.ID,
-			Title:        date.Title,
-			Body:         date.Body,
-			DateBegin:    date.BeginTime,
-			DateEnd:      date.EndTime,
-			UserID:       date.UserID,
-			Private:      date.Private,
-			RecurrenceID: date.RecurrenceID,
-			ColorID:      date.ColorID,
-		})
+
+	responses := make([]models.DateResponse, 0, len(dates))
+
+	for _, d := range dates {
+		responses = append(responses, *models.ToDateResponse(&d))
 	}
-	render.JSON(w, r, dateResponse)
+
+	render.JSON(w, r, responses)
 }
 
 // @Summary Get dates by recurrence ID
@@ -204,18 +170,8 @@ func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve date")
 		return
 	}
-	dateResponse := &models.DateResponse{
-		ID:           date.ID,
-		Title:        date.Title,
-		Body:         date.Body,
-		DateBegin:    date.BeginTime,
-		DateEnd:      date.EndTime,
-		UserID:       date.UserID,
-		Private:      date.Private,
-		RecurrenceID: date.RecurrenceID,
-		ColorID:      date.ColorID,
-	}
-	render.JSON(w, r, dateResponse)
+
+	render.JSON(w, r, models.ToDateResponse(date))
 }
 
 // @Summary Get dates by day range
@@ -248,21 +204,14 @@ func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Reque
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve dates")
 		return
 	}
-	DateResponse := make([]models.DateResponse, 0)
-	for _, date := range dates {
-		DateResponse = append(DateResponse, models.DateResponse{
-			ID:           date.ID,
-			Title:        date.Title,
-			Body:         date.Body,
-			DateBegin:    date.BeginTime,
-			DateEnd:      date.EndTime,
-			UserID:       date.UserID,
-			Private:      date.Private,
-			RecurrenceID: date.RecurrenceID,
-			ColorID:      date.ColorID,
-		})
+
+	responses := make([]models.DateResponse, 0, len(dates))
+
+	for _, d := range dates {
+		responses = append(responses, *models.ToDateResponse(&d))
 	}
-	render.JSON(w, r, DateResponse)
+
+	render.JSON(w, r, responses)
 }
 
 // @Summary Update a date by ID
@@ -272,7 +221,7 @@ func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Reque
 // @Produce json
 // @Param id path int true "Date ID"
 // @Param date body models.DateRequest true "Updated date details"
-// @Success 200 {object} map[string]string "Success message"
+// @Success 200 {object} models.DateResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Security 	BearerAuth
 // @Router /date/{id} [put]
@@ -306,7 +255,14 @@ func (config *DateConfig) UpdateDate(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update date")
 		return
 	}
-	render.JSON(w, r, map[string]string{"message": "Date updated successfully"})
+
+	updated, err := config.DateRepository.FindByID(uint(id))
+	if err != nil {
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve updated date")
+		return
+	}
+
+	render.JSON(w, r, models.ToDateResponse(updated))
 }
 
 // @Summary Delete a date by ID

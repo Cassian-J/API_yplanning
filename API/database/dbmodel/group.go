@@ -32,38 +32,65 @@ func (groupRepository *groupRepository) Create(group *Group) (*Group, error) {
 	if err := groupRepository.DB.Create(group).Error; err != nil {
 		return nil, err
 	}
+
+	if err := groupRepository.DB.Preload("Creator").First(group, group.ID).Error; err != nil {
+		return nil, err
+	}
+
 	return group, nil
 }
 
 func (groupRepository *groupRepository) FindAll() ([]Group, error) {
 	var groups []Group
-	if err := groupRepository.DB.Find(&groups).Error; err != nil {
+
+	if err := groupRepository.DB.
+		Preload("Creator").
+		Find(&groups).Error; err != nil {
 		return nil, err
 	}
+
 	return groups, nil
 }
 
 func (groupRepository *groupRepository) FindByID(id uint) (*Group, error) {
 	var group Group
-	if err := groupRepository.DB.First(&group, id).Error; err != nil {
+
+	if err := groupRepository.DB.
+		Preload("Creator").
+		First(&group, id).Error; err != nil {
 		return nil, err
 	}
+
 	return &group, nil
 }
-
 func (groupRepository *groupRepository) FindByCreatorID(creatorID uint) (*Group, error) {
 	var group Group
-	if err := groupRepository.DB.Preload("Creator").First(&group, creatorID).Error; err != nil {
+
+	if err := groupRepository.DB.
+		Preload("Creator").
+		Where("creator_id = ?", creatorID).
+		First(&group).Error; err != nil {
 		return nil, err
 	}
+
 	return &group, nil
 }
 
 func (groupRepository *groupRepository) UpdateByID(id uint, group *Group) (*Group, error) {
-	if err := groupRepository.DB.Model(&Group{}).Where("id = ?", id).Updates(group).Error; err != nil {
+	if err := groupRepository.DB.Model(&Group{}).
+		Where("id = ?", id).
+		Updates(group).Error; err != nil {
 		return nil, err
 	}
-	return group, nil
+
+	var updated Group
+	if err := groupRepository.DB.
+		Preload("Creator").
+		First(&updated, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &updated, nil
 }
 
 func (groupRepository *groupRepository) DeleteByID(id uint) error {

@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"net/http"
+	"yplanning/database/dbmodel"
 )
 
 type UserRequest struct {
@@ -14,12 +15,19 @@ type UserRequest struct {
 	ColorID  uint   `json:"color_id"`
 }
 
+type LoginRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type CreateUserRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Name     string `json:"name"`
 	Surname  string `json:"surname"`
+	ColorID  *uint  `json:"color_id,omitempty"`
 }
 
 type GetUserRequest struct {
@@ -43,10 +51,25 @@ func (u *UserRequest) Bind(r *http.Request) error {
 }
 
 type UserResponse struct {
-	ID       uint   `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Name     string `json:"name"`
-	Surname  string `json:"surname"`
-	ColorID  uint   `json:"color_id"`
+	ID       uint           `json:"id"`
+	Username string         `json:"username"`
+	Email    string         `json:"email"`
+	Name     string         `json:"name"`
+	Surname  string         `json:"surname"`
+	Color    *ColorResponse `json:"color,omitempty"`
+}
+
+func ToUserResponse(user *dbmodel.User) *UserResponse {
+	if user == nil {
+		return nil
+	}
+
+	return &UserResponse{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+		Name:     user.Name,
+		Surname:  user.Surname,
+		Color:    ToColorResponse(user.Color),
+	}
 }

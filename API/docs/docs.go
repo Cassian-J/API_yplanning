@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserRequest"
+                            "$ref": "#/definitions/models.LoginRequest"
                         }
                     }
                 ],
@@ -461,7 +461,7 @@ const docTemplate = `{
             }
         },
         "/color/hex": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -681,7 +681,7 @@ const docTemplate = `{
             }
         },
         "/date/range": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -700,15 +700,15 @@ const docTemplate = `{
                 "summary": "Get dates by day range",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Start date in ISO format (e.g., 2024-01-01T00:00:00Z)",
+                        "type": "integer",
+                        "description": "Start date as Unix timestamp",
                         "name": "start",
                         "in": "query",
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "End date in ISO format (e.g., 2024-01-31T23:59:59Z)",
+                        "type": "integer",
+                        "description": "End date as Unix timestamp",
                         "name": "end",
                         "in": "query",
                         "required": true
@@ -910,12 +910,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success message",
+                        "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.DateResponse"
                         }
                     },
                     "400": {
@@ -1005,58 +1002,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GroupUserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a group-user relationship by user ID and group ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "group-users"
-                ],
-                "summary": "Delete group-user relationship",
-                "parameters": [
-                    {
-                        "description": "GroupUserRequest",
-                        "name": "groupUser",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.GroupUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
                         }
                     },
                     "400": {
@@ -1167,6 +1112,58 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GroupUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a group-user relationship by user ID and group ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group-users"
+                ],
+                "summary": "Delete group-user relationship",
+                "parameters": [
+                    {
+                        "description": "GroupUserRequest",
+                        "name": "groupUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.GroupUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -1603,7 +1600,7 @@ const docTemplate = `{
             }
         },
         "/user/": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -1827,10 +1824,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "user_id": {
                     "type": "integer"
@@ -1841,16 +1838,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
                 }
             }
         },
@@ -1882,6 +1879,9 @@ const docTemplate = `{
         "models.CreateUserRequest": {
             "type": "object",
             "properties": {
+                "color_id": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1909,10 +1909,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "private": {
                     "type": "boolean"
@@ -1934,14 +1934,14 @@ const docTemplate = `{
                 "body": {
                     "type": "string"
                 },
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
                 "date_begin": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "date_end": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1955,8 +1955,8 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
                 }
             }
         },
@@ -1986,8 +1986,8 @@ const docTemplate = `{
         "models.GroupResponse": {
             "type": "object",
             "properties": {
-                "creator_id": {
-                    "type": "integer"
+                "creator": {
+                    "$ref": "#/definitions/models.UserResponse"
                 },
                 "id": {
                     "type": "integer"
@@ -2014,14 +2014,28 @@ const docTemplate = `{
         "models.GroupUserResponse": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
-                "group_id": {
-                    "type": "integer"
+                "group": {
+                    "$ref": "#/definitions/models.GroupResponse"
                 },
-                "user_id": {
-                    "type": "integer"
+                "user": {
+                    "$ref": "#/definitions/models.UserResponse"
+                }
+            }
+        },
+        "models.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -2039,6 +2053,9 @@ const docTemplate = `{
                 "access_token": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "refresh_token": {
                     "type": "string"
                 },
@@ -2050,10 +2067,19 @@ const docTemplate = `{
         "models.UserRequest": {
             "type": "object",
             "properties": {
+                "color_id": {
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "password": {
+                    "type": "string"
+                },
+                "surname": {
                     "type": "string"
                 },
                 "username": {
@@ -2064,8 +2090,8 @@ const docTemplate = `{
         "models.UserResponse": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
+                "color": {
+                    "$ref": "#/definitions/models.ColorResponse"
                 },
                 "email": {
                     "type": "string"
@@ -2097,10 +2123,10 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "",
 	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "LocateThis API",
+	Title:            "Yplanning API",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

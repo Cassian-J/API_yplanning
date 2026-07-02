@@ -47,13 +47,7 @@ func (config *AvailabilityConfig) CreateAvailability(w http.ResponseWriter, r *h
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create availability: "+err.Error())
 		return
 	}
-	availabilityResponse := &models.AvailabilityResponse{
-		ID:        createdAvailability.ID,
-		DateBegin: createdAvailability.BeginTime,
-		DateEnd:   createdAvailability.EndTime,
-		UserID:    createdAvailability.UserID,
-	}
-	render.JSON(w, r, availabilityResponse)
+	render.JSON(w, r, models.ToAvailabilityResponse(createdAvailability))
 }
 
 // @Summary Get all availabilities
@@ -72,12 +66,7 @@ func (config *AvailabilityConfig) GetAllAvailability(w http.ResponseWriter, r *h
 	}
 	availabilityResponse := make([]models.AvailabilityResponse, 0)
 	for _, availability := range availabilities {
-		availabilityResponse = append(availabilityResponse, models.AvailabilityResponse{
-			ID:        availability.ID,
-			DateBegin: availability.BeginTime,
-			DateEnd:   availability.EndTime,
-			UserID:    availability.UserID,
-		})
+		availabilityResponse = append(availabilityResponse, *models.ToAvailabilityResponse(&availability))
 	}
 	render.JSON(w, r, availabilityResponse)
 }
@@ -106,13 +95,7 @@ func (config *AvailabilityConfig) GetAvailabilityByID(w http.ResponseWriter, r *
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to retrieve availability: "+err.Error())
 		return
 	}
-	availabilityResponse := &models.AvailabilityResponse{
-		ID:        availability.ID,
-		DateBegin: availability.BeginTime,
-		DateEnd:   availability.EndTime,
-		UserID:    availability.UserID,
-	}
-	render.JSON(w, r, availabilityResponse)
+	render.JSON(w, r, models.ToAvailabilityResponse(availability))
 }
 
 // @Summary Get availabilities by user ID
@@ -141,12 +124,7 @@ func (config *AvailabilityConfig) GetAvailabilitiesByUserID(w http.ResponseWrite
 	}
 	availabilityResponse := make([]models.AvailabilityResponse, 0)
 	for _, availability := range availabilities {
-		availabilityResponse = append(availabilityResponse, models.AvailabilityResponse{
-			ID:        availability.ID,
-			DateBegin: availability.BeginTime,
-			DateEnd:   availability.EndTime,
-			UserID:    availability.UserID,
-		})
+		availabilityResponse = append(availabilityResponse, *models.ToAvailabilityResponse(&availability))
 	}
 	render.JSON(w, r, availabilityResponse)
 }
@@ -181,7 +159,7 @@ func (config *AvailabilityConfig) UpdateAvailability(w http.ResponseWriter, r *h
 		EndTime:   dateRequest.DateEnd,
 		UserID:    dateRequest.UserID,
 	}
-	err = config.AvailabilityRepository.UpdateByID(uint(id), availability)
+	_, err = config.AvailabilityRepository.UpdateByID(uint(id), availability)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update availability: "+err.Error())
 		return
