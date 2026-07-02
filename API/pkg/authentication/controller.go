@@ -11,7 +11,6 @@ import (
 	"yplanning/pkg/models"
 
 	"github.com/go-chi/render"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthConfig struct {
@@ -48,9 +47,6 @@ func (config *AuthConfig) Register(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusConflict, "Email or username already in use")
 		return
 	}
-
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	req.Password = string(hashedPassword)
 
 	userEntry := &dbmodel.User{Email: req.Email, Password: req.Password, Username: req.Username}
 	res, err := config.UserRepository.Create(userEntry)
@@ -104,10 +100,6 @@ func (config *AuthConfig) Login(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)) != nil {
-		errors.RenderError(w, r, http.StatusUnauthorized, "Invalid email or password")
-		return
-	}
 	accessToken, err := GenerateToken(os.Getenv("JWT_SECRET_KEY"), strconv.Itoa(int(user.ID)))
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to generate token: "+err.Error())
