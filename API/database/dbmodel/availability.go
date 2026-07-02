@@ -9,8 +9,8 @@ type Availability struct {
 	gorm.Model
 	UserID    uint      `json:"user_id"`
 	User      *User     `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	BeginTime int       `json:"begin_time"`
-	EndTime   int       `json:"end_time"`
+	BeginTime int64       `json:"begin_time"`
+	EndTime   int64       `json:"end_time"`
 }
 
 type AvailabilityRepository interface {

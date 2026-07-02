@@ -1,6 +1,9 @@
 package models
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
 type GroupUserRequest struct {
 	UserID  uint `json:"user_id"`
@@ -9,7 +12,13 @@ type GroupUserRequest struct {
 }
 
 func (g *GroupUserRequest) Bind(r *http.Request) error {
-	panic("unimplemented")
+	if g.UserID == 0 {
+		return errors.New("user_id is required")
+	}
+	if g.GroupID == 0 {
+		return errors.New("group_id is required")
+	}
+	return nil
 }
 
 type GroupUserResponse struct {

@@ -232,6 +232,7 @@ func (config *DateConfig) GetDatesByRecurrenceID(w http.ResponseWriter, r *http.
 // @Router /date/range [post]
 func (config *DateConfig) GetDateByDayRange(w http.ResponseWriter, r *http.Request) {
 	var rangeRequest models.AvailabilityRequest
+
 	if err := render.Bind(r, &rangeRequest); err != nil {
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
 		return

@@ -37,12 +37,25 @@ func (config *GroupConfig) CreateGroup(w http.ResponseWriter, r *http.Request) {
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+	if req.CreatorID == 0 {
+		errors.RenderError(w, r, http.StatusBadRequest, "Creator ID is required")
+		return
+	}
+
 	group := &dbmodel.Group{Name: req.Name, CreatorID: req.CreatorID}
 	created, err := config.GroupRepository.Create(group)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create group")
 		return
 	}
+
+	userGroup := &dbmodel.UserGroup{UserID: req.CreatorID, GroupID: created.ID}
+	if _, err := config.UserGroupRepository.Create(userGroup); err != nil {
+		_ = config.GroupRepository.DeleteByID(created.ID)
+		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to link creator to group")
+		return
+	}
+
 	groupResponse := &models.GroupResponse{ID: created.ID, Name: created.Name, CreatorID: created.CreatorID}
 	render.JSON(w, r, groupResponse)
 }

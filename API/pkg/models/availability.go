@@ -6,25 +6,25 @@ import (
 )
 
 type AvailabilityRequest struct {
-	DateBegin int  `json:"date_begin"`
-	DateEnd   int  `json:"date_end"`
-	UserID    uint `json:"user_id"`
+    DateBegin int64 `json:"dateBegin"`
+    DateEnd   int64 `json:"dateEnd"`
+    UserID    uint  `json:"userId"`
 }
 
 func (a *AvailabilityRequest) Bind(r *http.Request) error {
 	if a.DateBegin == 0 {
-		return errors.New("date_begin must not be null")
+		return errors.New("dateBegin must not be null")
 	} else if a.DateEnd == 0 {
-		return errors.New("date_end must not be null")
+		return errors.New("dateEnd must not be null")
 	} else if a.UserID < 1 {
-		return errors.New("user_id must be >= 1")
+		return errors.New("userId must be >= 1")
 	}
 	return nil
 }
 
 type AvailabilityResponse struct {
-	ID        uint `json:"id"`
-	DateBegin int  `json:"date_begin"`
-	DateEnd   int  `json:"date_end"`
-	UserID    uint `json:"user_id"`
+    ID        uint  `json:"id"`
+    DateBegin int64 `json:"dateBegin"`
+    DateEnd   int64 `json:"dateEnd"`
+    UserID    uint  `json:"userId"`
 }

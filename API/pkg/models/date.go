@@ -8,11 +8,11 @@ import (
 type DateRequest struct {
 	Title        string `json:"title"`
 	Body         string `json:"body"`
-	DateBegin    int    `json:"date_begin"`
-	DateEnd      int    `json:"date_end"`
+	DateBegin    int64  `json:"date_begin"`
+	DateEnd      int64  `json:"date_end"`
 	UserID       uint   `json:"user_id"`
 	Private      bool   `json:"private"`
-	RecurrenceID uint   `json:"recurrence_id"`
+	RecurrenceID *uint  `json:"recurrence_id"`
 	ColorID      uint   `json:"color_id"`
 }
 
@@ -30,13 +30,13 @@ func (u *DateRequest) Bind(r *http.Request) error {
 }
 
 type DateResponse struct {
-	ID           uint      `json:"id"`
-	Title        string    `json:"title"`
-	Body         string    `json:"body"`
-	DateBegin    int       `json:"date_begin"`
-	DateEnd      int       `json:"date_end"`
-	UserID       uint      `json:"user_id"`
-	Private      bool      `json:"private"`
-	RecurrenceID uint      `json:"recurrence_id"`
-	ColorID      uint      `json:"color_id"`
+	ID           uint   `json:"id"`
+	Title        string `json:"title"`
+	Body         string `json:"body"`
+	DateBegin    int64  `json:"date_begin"`
+	DateEnd      int64  `json:"date_end"`
+	UserID       uint   `json:"user_id"`
+	Private      bool   `json:"private"`
+	RecurrenceID *uint  `json:"recurrence_id"`
+	ColorID      uint   `json:"color_id"`
 }

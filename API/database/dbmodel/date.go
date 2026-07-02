@@ -10,10 +10,10 @@ type Date struct {
 	Body         string `gorm:"not null" json:"body"`
 	UserID       uint   `json:"user_id"`
 	User         *User  `gorm:"not null;constraint:OnDelete:CASCADE;"`
-	BeginTime    int    `json:"begin_time"`
-	EndTime      int    `json:"end_time"`
+	BeginTime    int64  `json:"begin_time"`
+	EndTime      int64  `json:"end_time"`
 	Private      bool   `json:"private"`
-	RecurrenceID uint   `json:"recurrence_id"`
+	RecurrenceID *uint  `json:"recurrence_id"`
 	Recurrence   *Date  `gorm:"constraint:OnDelete:SET NULL;"`
 	ColorID      uint   `json:"color_id"`
 	Color        *Color `gorm:"null;constraint:OnDelete:SET NULL;"`
@@ -25,7 +25,7 @@ type DateRepository interface {
 	FindByID(id uint) (*Date, error)
 	FindByUserID(userID uint) ([]Date, error)
 	FindByRecurrenceID(recurrenceID uint) (*Date, error)
-	FindByDayRange(begin int, end int, userID uint) ([]Date, error)
+	FindByDayRange(begin int64, end int64, userID uint) ([]Date, error)
 	UpdateByID(id uint, date *Date) error
 	DeleteByID(id uint) error
 }
@@ -71,13 +71,13 @@ func (dateRepository *dateRepository) FindByUserID(userID uint) ([]Date, error) 
 
 func (dateRepository *dateRepository) FindByRecurrenceID(recurrenceID uint) (*Date, error) {
 	var date Date
-	if err := dateRepository.DB.Preload("Recurrence").First(&date, recurrenceID).Error; err != nil {
+	if err := dateRepository.DB.Preload("Recurrence").Where("recurrence_id = ?", recurrenceID).First(&date).Error; err != nil {
 		return nil, err
 	}
 	return &date, nil
 }
 
-func (dateRepository *dateRepository) FindByDayRange(begin int, end int, userID uint) ([]Date, error) {
+func (dateRepository *dateRepository) FindByDayRange(begin int64, end int64, userID uint) ([]Date, error) {
 	var dates []Date
 	if err := dateRepository.DB.Preload("User").Where("begin_time >= ? AND end_time <= ? AND user_id = ?", begin, end, userID).Find(&dates).Error; err != nil {
 		return nil, err
