@@ -3,8 +3,8 @@ package dbmodel
 import "gorm.io/gorm"
 
 type UserGroup struct {
-	UserID  uint  `json:"user_id"`
-	GroupID uint  `json:"group_id"`
+	UserID  uint  `gorm:"primaryKey" json:"user_id"`
+	GroupID uint  `gorm:"primaryKey" json:"group_id"`
 	ColorID *uint `json:"color_id"`
 
 	User  User  `gorm:"constraint:OnDelete:CASCADE;"`

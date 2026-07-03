@@ -37,7 +37,14 @@ func (config *GroupUserConfig) CreateGroupUser(w http.ResponseWriter, r *http.Re
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	groupUser := &dbmodel.UserGroup{UserID: req.UserID, GroupID: req.GroupID}
+
+	user, err := config.UserRepository.FindByUsername(req.Username)
+	if err != nil {
+		errors.RenderError(w, r, http.StatusNotFound, "User not found")
+		return
+	}
+
+	groupUser := &dbmodel.UserGroup{UserID: user.ID, GroupID: req.GroupID}
 	created, err := config.UserGroupRepository.Create(groupUser)
 	if err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to create group-user relationship")
@@ -197,8 +204,14 @@ func (config *GroupUserConfig) UpdateGroupUserColor(w http.ResponseWriter, r *ht
 		errors.RenderError(w, r, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	err := config.UserGroupRepository.UpdateColorByUserIDAndGroupID(req.UserID, req.GroupID, req.ColorID)
+
+	user, err := config.UserRepository.FindByUsername(req.Username)
 	if err != nil {
+		errors.RenderError(w, r, http.StatusNotFound, "User not found")
+		return
+	}
+
+	if err := config.UserGroupRepository.UpdateColorByUserIDAndGroupID(user.ID, req.GroupID, req.ColorID); err != nil {
 		errors.RenderError(w, r, http.StatusInternalServerError, "Failed to update group-user color")
 		return
 	}
