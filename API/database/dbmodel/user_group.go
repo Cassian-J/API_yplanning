@@ -3,9 +3,9 @@ package dbmodel
 import "gorm.io/gorm"
 
 type UserGroup struct {
-	UserID  uint `json:"user_id"`
-	GroupID uint `json:"group_id"`
-	ColorID uint `gorm:"null" json:"color_id"`
+	UserID  uint  `json:"user_id"`
+	GroupID uint  `json:"group_id"`
+	ColorID *uint `json:"color_id"`
 
 	User  User  `gorm:"constraint:OnDelete:CASCADE;"`
 	Group Group `gorm:"constraint:OnDelete:CASCADE;"`
@@ -41,8 +41,8 @@ func (userGroupRepository *userGroupRepository) Create(userGroup *UserGroup) (*U
 		Preload("User").
 		Preload("User.Color").
 		Preload("Group").
-		Preload("Group.User").
-		Preload("Group.User.Color").
+		Preload("Group.Creator").
+		Preload("Group.Creator.Color").
 		Preload("Color").
 		Where("user_id = ? AND group_id = ?", userGroup.UserID, userGroup.GroupID).
 		First(&result).Error; err != nil {
@@ -59,8 +59,8 @@ func (userGroupRepository *userGroupRepository) FindAll() ([]UserGroup, error) {
 		Preload("User").
 		Preload("User.Color").
 		Preload("Group").
-		Preload("Group.User").
-		Preload("Group.User.Color").
+		Preload("Group.Creator").
+		Preload("Group.Creator.Color").
 		Preload("Color").
 		Find(&userGroups).Error; err != nil {
 		return nil, err
@@ -76,15 +76,23 @@ func (userGroupRepository *userGroupRepository) FindByUserID(userID uint) ([]Use
 		Preload("User").
 		Preload("User.Color").
 		Preload("Group").
-		Preload("Group.User").
-		Preload("Group.User.Color").
+		Preload("Group.Creator").
+		Preload("Group.Creator.Color").
 		Preload("Color").
 		Where("user_id = ?", userID).
 		Find(&userGroups).Error; err != nil {
 		return nil, err
 	}
 
-	return userGroups, nil
+	clean := make([]UserGroup, 0)
+
+	for _, ug := range userGroups {
+		if ug.Group.ID != 0 {
+			clean = append(clean, ug)
+		}
+	}
+
+	return clean, nil
 }
 
 func (userGroupRepository *userGroupRepository) FindByGroupID(groupID uint) ([]UserGroup, error) {
@@ -94,8 +102,8 @@ func (userGroupRepository *userGroupRepository) FindByGroupID(groupID uint) ([]U
 		Preload("User").
 		Preload("User.Color").
 		Preload("Group").
-		Preload("Group.User").
-		Preload("Group.User.Color").
+		Preload("Group.Creator").
+		Preload("Group.Creator.Color").
 		Preload("Color").
 		Where("group_id = ?", groupID).
 		Find(&userGroups).Error; err != nil {
@@ -112,8 +120,8 @@ func (userGroupRepository *userGroupRepository) FindByUserIDAndGroupID(userID ui
 		Preload("User").
 		Preload("User.Color").
 		Preload("Group").
-		Preload("Group.User").
-		Preload("Group.User.Color").
+		Preload("Group.Creator").
+		Preload("Group.Creator.Color").
 		Preload("Color").
 		Where("user_id = ? AND group_id = ?", userID, groupID).
 		First(&userGroup).Error; err != nil {

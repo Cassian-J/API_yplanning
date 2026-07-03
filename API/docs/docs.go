@@ -1233,7 +1233,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/group-user/groups-users/": {
+        "/group-user/groups-users": {
             "get": {
                 "security": [
                     {
@@ -1823,13 +1823,13 @@ const docTemplate = `{
         "models.AvailabilityRequest": {
             "type": "object",
             "properties": {
-                "date_begin": {
+                "dateBegin": {
                     "type": "integer"
                 },
-                "date_end": {
+                "dateEnd": {
                     "type": "integer"
                 },
-                "user_id": {
+                "userId": {
                     "type": "integer"
                 }
             }
@@ -1837,10 +1837,10 @@ const docTemplate = `{
         "models.AvailabilityResponse": {
             "type": "object",
             "properties": {
-                "date_begin": {
+                "dateBegin": {
                     "type": "integer"
                 },
-                "date_end": {
+                "dateEnd": {
                     "type": "integer"
                 },
                 "id": {
@@ -1879,9 +1879,6 @@ const docTemplate = `{
         "models.CreateUserRequest": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
-                },
                 "email": {
                     "type": "string"
                 },

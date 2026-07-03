@@ -31,14 +31,18 @@ type GroupUserResponse struct {
 }
 
 func ToGroupUserResponse(userGroup *dbmodel.UserGroup) *GroupUserResponse {
-
 	if userGroup == nil {
 		return nil
+	}
+
+	var color *ColorResponse
+	if userGroup.Color.ID != 0 {
+		color = ToColorResponse(&userGroup.Color)
 	}
 
 	return &GroupUserResponse{
 		User:  ToUserResponse(&userGroup.User),
 		Group: ToGroupResponse(&userGroup.Group),
-		Color: ToColorResponse(&userGroup.Color),
+		Color: color,
 	}
 }

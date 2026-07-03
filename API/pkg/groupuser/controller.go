@@ -55,7 +55,7 @@ func (config *GroupUserConfig) CreateGroupUser(w http.ResponseWriter, r *http.Re
 // @Failure 	400 {object} models.ErrorResponse
 // @Failure 	500 {object} 	models.ErrorResponse
 // @Security 	BearerAuth
-// @Router		/group-user/groups-users/ [get]
+// @Router		/group-user/groups-users [get]
 func (config *GroupUserConfig) GetAllGroupUsers(w http.ResponseWriter, r *http.Request) {
 	groupUsers, err := config.UserGroupRepository.FindAll()
 	if err != nil {

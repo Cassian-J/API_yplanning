@@ -1225,7 +1225,7 @@
                 }
             }
         },
-        "/group-user/groups-users/": {
+        "/group-user/groups-users": {
             "get": {
                 "security": [
                     {
@@ -1815,13 +1815,13 @@
         "models.AvailabilityRequest": {
             "type": "object",
             "properties": {
-                "date_begin": {
+                "dateBegin": {
                     "type": "integer"
                 },
-                "date_end": {
+                "dateEnd": {
                     "type": "integer"
                 },
-                "user_id": {
+                "userId": {
                     "type": "integer"
                 }
             }
@@ -1829,10 +1829,10 @@
         "models.AvailabilityResponse": {
             "type": "object",
             "properties": {
-                "date_begin": {
+                "dateBegin": {
                     "type": "integer"
                 },
-                "date_end": {
+                "dateEnd": {
                     "type": "integer"
                 },
                 "id": {
@@ -1871,9 +1871,6 @@
         "models.CreateUserRequest": {
             "type": "object",
             "properties": {
-                "color_id": {
-                    "type": "integer"
-                },
                 "email": {
                     "type": "string"
                 },
